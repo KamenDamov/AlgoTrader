@@ -11,7 +11,8 @@ function App() {
         <button class='buttons' onMouseEnter={() => setText('You are a safe investor that would like to get a slow but steady return on investment')} 
                                 onMouseLeave={() => setText('')}>I want to invest in something safe</button>
 
-        <button class='buttons'onMouseEnter={() => setText('You are an aggressive investor and would like to have a big return on investment even though it is risky')} onMouseLeave={() => setText('')}>High risk, high reward</button>
+        <button class='buttons'onMouseEnter={() => setText('You are an aggressive investor and would like to have a big return on investment even though it is risky')} 
+                                onMouseLeave={() => setText('')}>High risk, high reward</button>
         <p>{text}</p>
       </div>
     </div>
