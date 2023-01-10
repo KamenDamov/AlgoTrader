@@ -1,2 +1,2 @@
-,Ticker,Price,1y Price Return,1y percentile,6m Price Return,6m percentile,3m Price Return,3m percentile,1m Price Return,1m percentile
-0,AAPL,132.3000030517578,-0.22720347708000932,0,-0.08398177009819417,0,-0.05626349957833206,0,-0.084365713737778,0
+,Ticker,Price,1y Price Return,1y percentile,6m Price Return,6m percentile,3m Price Return,3m percentile,1m Price Return,1m percentile,Weighted Hurst Exponent
+0,AAPL,130.72999572753906,-0.248979232255726,0,-0.09485227613324376,0,-0.057800692810346825,0,-0.09523156787668609,0,0.4966134938531237
