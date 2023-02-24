@@ -32,7 +32,7 @@ function RegistrationPage() {
       </label>
       <br />
       <button type="submit">Register</button>
-      <p>Test your AI and algorithmic trading strategy today</p>
+      <p>Sign up and test your AI and algorithmic trading strategy today</p>
     </form>
   );
 }
