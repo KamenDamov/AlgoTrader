@@ -13,6 +13,7 @@ function RegistrationPage() {
 
   return (
     <form onSubmit={handleSubmit}>
+      <p>Sign up and test your AI and algorithmic trading strategy today</p>
       <label>
         Profile Name:
         <input
@@ -32,7 +33,6 @@ function RegistrationPage() {
       </label>
       <br />
       <button type="submit">Register</button>
-      <p>Sign up and test your AI and algorithmic trading strategy today</p>
     </form>
   );
 }
