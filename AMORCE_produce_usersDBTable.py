@@ -1,33 +1,36 @@
-import numpy as np
-import pandas as pd
-import math
-import requests 
-import matplotlib as plt
-import seaborn as sns
-import yfinance as yf
-import pandas_datareader as web
-from pandas_datareader import data
-from bs4 import BeautifulSoup as bs
-from scipy import stats
-import sqlite3
-import time
+import psycopg2
 
-#Create db
-conn = sqlite3.connect('financial_data.db')
+# Connect to the PostgreSQL server
+conn = psycopg2.connect(
+    host="localhost",
+    database="financial_db",
+    user="postgres",
+    password="KaMendiNiO"
+)
 
-# Create a cursor
-cursor = conn.cursor()
-# Create the first table
-users_query = '''
-CREATE TABLE users (
-    Username TEXT NOT NULL,
-    Email TEXT NOT NULL,
-    Password TEXT NOT NULL,
-    Funds FLOAT, 
-    Stock_In_Portfolio TEXT NOT NULL 
+# Open a cursor to perform database operations
+cur = conn.cursor()
+
+all_time_prices_query = '''
+CREATE TABLE IF NOT EXISTS all_time_prices (
+    Date TIMESTAMP,
+    Open FLOAT,
+    High FLOAT, 
+    Low FLOAT, 
+    Close FLOAT, 
+    Volume FLOAT,
+    Dividends FLOAT, 
+    Stock_Splits FLOAT, 
+    Ticker TEXT NOT NULL    
 );
 '''
 
-cursor.execute(users_query)
+# Execute a CREATE TABLE statement to create a new table
+cur.execute(all_time_prices_query)
 
+# Commit the transaction
 conn.commit()
+
+# Close the cursor and connection
+cur.close()
+conn.close()
