@@ -1,1 +1,2 @@
 PostgreSQL PORT: 5432
+Apache PORT: 8080
