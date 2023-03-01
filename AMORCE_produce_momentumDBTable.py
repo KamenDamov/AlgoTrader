@@ -1,4 +1,17 @@
 import psycopg2
+import numpy as np
+import pandas as pd
+import math
+import requests 
+import matplotlib as plt
+import seaborn as sns
+import yfinance as yf
+import pandas_datareader as web
+from pandas_datareader import data
+from bs4 import BeautifulSoup as bs
+from scipy import stats
+import psycopg2
+import time
 
 # Connect to the PostgreSQL server
 conn = psycopg2.connect(
@@ -27,6 +40,20 @@ CREATE TABLE IF NOT EXISTS momentum (
     HQM_score FLOAT
 );
 '''
+
+#calulate the Hurst exponent of a stock
+def get_hurst_exponent(time_series, max_lag):
+    """Returns the Hurst Exponent of the time series"""
+        
+    lags = range(2, max_lag)
+
+    # variances of the lagged differences
+    tau = [np.std(np.subtract(time_series[lag:], time_series[:-lag])) for lag in lags]
+
+    # calculate the slope of the log plot -> the Hurst Exponent
+    reg = np.polyfit(np.log(lags), np.log(tau), 1)
+
+    return reg[0]
 
 # Execute a CREATE TABLE statement to create a new table
 cur.execute(momentum_query)
