@@ -11,6 +11,7 @@ from pandas_datareader import data
 from bs4 import BeautifulSoup as bs
 from scipy import stats
 import time
+import sqlalchemy
 from sqlalchemy import create_engine
 
 

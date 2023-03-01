@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup as bs
 from scipy import stats
 import psycopg2
 import time
+import sqlalchemy
 from sqlalchemy import create_engine
 
 # Connect to the PostgreSQL server
