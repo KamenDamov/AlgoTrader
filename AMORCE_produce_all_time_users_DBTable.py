@@ -11,6 +11,7 @@ from pandas_datareader import data
 from bs4 import BeautifulSoup as bs
 from scipy import stats
 import time
+from sqlalchemy import create_engine
 
 
 # Connect to the PostgreSQL server
@@ -40,7 +41,8 @@ CREATE TABLE IF NOT EXISTS all_time_prices (
 
 # Execute a CREATE TABLE statement to create a new table
 cur.execute(all_time_prices_query)
-
+cur.execute("SELECT Ticker FROM tickers")
+tick = [row[0] for row in cur.fetchall()]
 all_time_cols = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock_Splits', 'Ticker']
 all_time = pd.DataFrame(columns = all_time_cols)
 count = 0 
@@ -72,6 +74,10 @@ for i in range(len(tick)):
     except AttributeError: 
         print("Attribute error found")
         continue
+
+#Push data to all_time_prices table
+engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
+all_time.to_sql(name='all_time_prices', con=engine, if_exists='replace', index=False)
 
 
 # Commit the transaction
