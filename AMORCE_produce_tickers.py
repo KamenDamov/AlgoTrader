@@ -1,5 +1,5 @@
 import psycopg2
-import pandas as pd
+import csv
 
 # Connect to the PostgreSQL server
 conn = psycopg2.connect(
@@ -15,7 +15,7 @@ cur = conn.cursor()
 ticker_query = '''
 CREATE TABLE IF NOT EXISTS tickers (
     ID INTEGER,
-    Ticker VARCHAR(10)    
+    Ticker VARCHAR(20)  
 );
 '''
 
@@ -23,12 +23,12 @@ CREATE TABLE IF NOT EXISTS tickers (
 cur.execute(ticker_query)
 
 ########################################################
-with 
-
-for line in input_data.strip().split('\n'):
-    # Split the line into two values: index and ticker
-    index, ticker = line.strip().split(',')
-    cur.execute("INSERT INTO tickers (index, tickers) VALUES (%s, %s);", (index, ticker))
+with open('all_stocks', 'r') as f: 
+    reader = csv.reader(f)
+    next(reader)
+    for row in reader:
+        index, ticker = row
+        cur.execute("INSERT INTO tickers (ID, Ticker) VALUES (%s, %s);", (index, ticker))
 
 conn.commit()
 cur.close()
