@@ -50,26 +50,26 @@ for i in range(len(tick)):
     start = time.time()    
     try:
         #Creating the df to be added to all_time_prices
-        ticker = tick["0"][i]
+        ticker = tick[i]
         info = yf.Ticker(ticker).history(period='max')
         info.reset_index(inplace = True)
         info['Ticker'] = ticker
         info.rename({'Stock Splits':'Stock_Splits'},axis = 1,inplace = True)
         info['Volume'] = info['Volume'].astype(float)
-        print(info) 
+        print(info)
         
         # Append the first dataframe to the table
         all_time = pd.concat([all_time, info])
 
         #print(momentum_append)
     except TypeError: 
-        print("Nonetype found for: " + tick["0"][i])
+        print("Nonetype found for: " + tick[i])
         continue
     except IndexError: 
-        print("Couldn't find: ",tick["0"][i])
+        print("Couldn't find: ",tick[i])
         continue
     except KeyError:
-        print("Couldnt find key for: " + tick['0'][i])
+        print("Couldnt find key for: " + tick[i])
         continue
     except AttributeError: 
         print("Attribute error found")
