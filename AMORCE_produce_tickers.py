@@ -15,7 +15,7 @@ cur = conn.cursor()
 ticker_query = '''
 CREATE TABLE IF NOT EXISTS tickers (
     ID INTEGER,
-    Ticker TEXT NOT NULL    
+    Ticker VARCHAR(10)    
 );
 '''
 
@@ -23,16 +23,12 @@ CREATE TABLE IF NOT EXISTS tickers (
 cur.execute(ticker_query)
 
 ########################################################
-input_data = pd.read_csv('all_stocks')
+with 
 
-#for line in input_data.strip().split('\n'):
+for line in input_data.strip().split('\n'):
     # Split the line into two values: index and ticker
-#    index, ticker = line.strip().split(',')
-
-#Add ticker data to the table
-#with open('./all_stocks', 'r') as f: 
-#    next(f)
-#    cur.copy_from(f, 'tickers', sep=',') 
+    index, ticker = line.strip().split(',')
+    cur.execute("INSERT INTO tickers (index, tickers) VALUES (%s, %s);", (index, ticker))
 
 conn.commit()
 cur.close()
