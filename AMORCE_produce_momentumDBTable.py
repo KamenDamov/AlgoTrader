@@ -11,7 +11,7 @@ conn = psycopg2.connect(
 # Open a cursor to perform database operations
 cur = conn.cursor()
 
-all_time_prices_query = '''
+momentum_query = '''
 CREATE TABLE IF NOT EXISTS momentum (
     Ticker TEXT NOT NULL,
     Price FLOAT,
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS momentum (
 '''
 
 # Execute a CREATE TABLE statement to create a new table
-cur.execute(all_time_prices_query)
+cur.execute(momentum_query)
 
 # Commit the transaction
 conn.commit()
