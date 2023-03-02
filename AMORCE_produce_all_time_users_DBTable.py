@@ -78,13 +78,13 @@ for i in range(len(tick)):
 
     #Push data to all_time_prices table
     engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
-    info.to_sql(name='all_time_prices', con=engine, if_exists='replace', index=False)
-
+    info.to_sql(name='all_time_prices', con=engine, if_exists='append', index=False)
+    
     print('Done')
 
     # Commit the transaction
     conn.commit()
-
+    
 # Close the cursor and connection
 cur.close()
 conn.close()
