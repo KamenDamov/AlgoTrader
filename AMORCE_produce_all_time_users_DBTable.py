@@ -60,7 +60,7 @@ for i in range(len(tick)):
         print(info)
         
         # Append the first dataframe to the table
-        all_time = pd.concat([all_time, info])
+        #all_time = pd.concat([all_time, info])
 
         #print(momentum_append)
     except TypeError: 
@@ -76,14 +76,14 @@ for i in range(len(tick)):
         print("Attribute error found")
         continue
 
-#Push data to all_time_prices table
-engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
-all_time.to_sql(name='all_time_prices', con=engine, if_exists='replace', index=False)
+    #Push data to all_time_prices table
+    engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
+    info.to_sql(name='all_time_prices', con=engine, if_exists='replace', index=False)
 
-print('Done')
+    print('Done')
 
-# Commit the transaction
-conn.commit()
+    # Commit the transaction
+    conn.commit()
 
 # Close the cursor and connection
 cur.close()

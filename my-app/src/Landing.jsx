@@ -1,14 +1,14 @@
 import { useHistory } from 'react-router-dom';
 
-const LandingPage = () => {
+const Landing = () => {
   const history = useHistory();
 
   const handleLoginClick = () => {
-    history.push('/login');
+    history.push('./Login');
   };
 
   const handleSignUpClick = () => {
-    history.push('/signup');
+    history.push('./SignUp');
   };
 
   return (
