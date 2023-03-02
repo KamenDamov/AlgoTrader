@@ -8,8 +8,8 @@ const Landing = () => {
       <h2>
           Test your <span>AI and algorithmic trading strategy</span> today
       </h2>
-      <Link to = '/Login'>Log in</Link>
-      <Link to = '/SignUp'>Sign up</Link>
+      <Link to = '/Login' className='button'>Log in</Link>
+      <Link to = '/SignUp' className='button'>Sign up</Link>
     </div>
   );
 };

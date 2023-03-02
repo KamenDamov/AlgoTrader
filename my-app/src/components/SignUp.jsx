@@ -11,7 +11,7 @@ function RegistrationForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     
-    const user = { name, email, password, funds };
+    //const user = { name, email, password, funds };
 
     /*axios.post("/api/users", user)
       .then((response) => {

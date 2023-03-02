@@ -9,7 +9,7 @@ function LoginForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     
-    const user = { name, password };
+    //const user = { name, password };
 
     /*axios.post("/api/users", user)
       .then((response) => {
