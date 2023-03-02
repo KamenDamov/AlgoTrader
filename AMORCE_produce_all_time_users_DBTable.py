@@ -80,6 +80,7 @@ for i in range(len(tick)):
 engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
 all_time.to_sql(name='all_time_prices', con=engine, if_exists='replace', index=False)
 
+print('Done')
 
 # Commit the transaction
 conn.commit()
