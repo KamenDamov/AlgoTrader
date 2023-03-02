@@ -1,2 +1,4 @@
 TODO
-- Une fois que l'amorce est produite, avoir un script par table qui prend la date la plus recente et call le API pour avoir les datas de la date la plus récente et le date présente. Toujours populé malgré les bugs avec API.
+- Creer table users
+- COnnecter avec interface et creer user
+- Creer interface avec données du marché
