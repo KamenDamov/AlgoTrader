@@ -51,7 +51,7 @@ function LoginForm() {
           
           <button type="login">Log in</button>
         </form>
-        <Link to="/">Back to landing page</Link>
+        <Link to="/" className="back-to-landing-page">Back to landing page</Link>
       </div>
     </div>
   );
