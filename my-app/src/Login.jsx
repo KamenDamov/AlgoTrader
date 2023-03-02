@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./login.css";
 
-function RegistrationForm() {
+function LoginForm() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("")
 
@@ -53,4 +53,4 @@ function RegistrationForm() {
   );
 }
 
-export default RegistrationForm;
+export default LoginForm;
