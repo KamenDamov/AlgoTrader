@@ -57,6 +57,8 @@ for i in range(len(tick)):
         info['Ticker'] = ticker
         info.rename({'Stock Splits':'Stock_Splits'},axis = 1,inplace = True)
         info['Volume'] = info['Volume'].astype(float)
+        if 'Capital Gains' in info.columns: 
+            del info['Capital Gains']
         print(info)
         
         # Append the first dataframe to the table
