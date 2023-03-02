@@ -68,7 +68,7 @@ function RegistrationForm() {
           />
 
           <button type="submit">Submit</button>
-          <Link to="/Landing">Back to landing page</Link>
+          <Link to="/">Back to landing page</Link>
         </form>
       </div>
     </div>
