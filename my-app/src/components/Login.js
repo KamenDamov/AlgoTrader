@@ -27,9 +27,7 @@ function LoginForm() {
   return (
     <div className="hero-image">
       <div className="form-container">
-        <h2>
-          Test your <span>AI and algorithmic trading strategy</span> today
-        </h2>
+        
         <form onSubmit={handleSubmit}>
           <label htmlFor="name">Username</label>
           <input
