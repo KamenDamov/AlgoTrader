@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import React, { useState } from "react";
 import "./signup.css";
 
@@ -67,6 +68,7 @@ function RegistrationForm() {
           />
 
           <button type="submit">Submit</button>
+          <Link to="/Landing">Back to landing page</Link>
         </form>
       </div>
     </div>

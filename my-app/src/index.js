@@ -1,23 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './signup.css';
 import './login.css';
-//Add landing page style
+import Landing from './Landing';
 import Login from './Login';
 import SignUp from './SignUp';
-import Landing from './Landing';
-import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <Landing />
-    <Login />
-    <SignUp />
-  </React.StrictMode>
-);
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route exact path="C:/Kamen/ML/AlgoTrader/my-app/src/Landing" component={Landing} />
+        <Route path="/Login" component={Login} />
+        <Route path="/SignUp" component={SignUp} />
+      </Routes>
+    </Router>
+  );
+}
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+export default App;

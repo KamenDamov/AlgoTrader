@@ -1,3 +1,4 @@
+import {Link} from 'react-router-dom'
 import React, { useState } from "react";
 import "./login.css";
 
@@ -46,8 +47,9 @@ function LoginForm() {
             onChange={(event) => setPassword(event.target.value)}
           />
           
-          <button type="submit">Submit</button>
+          <button type="login">Log in</button>
         </form>
+        <Link to="/Landing">Back to landing page</Link>
       </div>
     </div>
   );

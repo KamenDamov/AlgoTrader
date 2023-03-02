@@ -1,21 +1,15 @@
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Landing = () => {
-  const history = useHistory();
-
-  const handleLoginClick = () => {
-    history.push('./Login');
-  };
-
-  const handleSignUpClick = () => {
-    history.push('./SignUp');
-  };
-
   return (
     <div>
-      <h1></h1>
-      <button onClick={handleLoginClick}>Log in</button>
-      <button onClick={handleSignUpClick}>Sign up</button>
+      <h2>
+          Test your <span>AI and algorithmic trading strategy</span> today
+      </h2>
+      <Link to = '/Login'>Log in</Link>
+      <Link to = '/SignUp'>Sign up</Link>
     </div>
   );
 };
+
+export default Landing;
