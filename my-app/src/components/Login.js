@@ -1,6 +1,8 @@
 import {Link} from 'react-router-dom'
 import React, { useState } from "react";
 import "./style/login.css";
+import './style/global.css';
+
 
 function LoginForm() {
   const [name, setName] = useState("");

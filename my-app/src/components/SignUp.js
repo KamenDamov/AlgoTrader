@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import React, { useState } from "react";
 import "./style/signup.css";
+import './style/global.css';
+
 
 function RegistrationForm() {
   const [name, setName] = useState("");
