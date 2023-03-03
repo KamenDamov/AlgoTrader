@@ -12,13 +12,7 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 query = '''
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    username TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
-    funds DECIMAL(12,2) NOT NULL DEFAULT 0
-);
+
 '''
 
 cur.execute(query)
