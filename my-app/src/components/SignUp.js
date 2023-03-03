@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import React, { useState } from "react";
+const { Pool } = require('pg');
 import "./style/signup.css";
 import './style/global.css';
 
@@ -12,18 +13,16 @@ function RegistrationForm() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
-    //const user = { name, email, password, funds };
-
-    /*axios.post("/api/users", user)
-      .then((response) => {
-        console.log(response.data);
-        // TODO: Add success message
-      })
-      .catch((error) => {
-        console.error(error);
-        // TODO: Add error message
-      })*/
+    const user = { name, email, password, funds };
+    pool.query('INSERT INTO users (username, email, password, funds) VALUES ($1, $2, $3, $4)', [name, email, password, funds])
+    .then(() => {
+      console.log('User created successfully');
+      // TODO: Add success message
+    })
+    .catch((error) => {
+      console.error(error);
+      // TODO: Add error message
+    });
     };
 
   return (
