@@ -11,11 +11,15 @@ conn = psycopg2.connect(
 # Open a cursor to perform database operations
 cur = conn.cursor()
 
+<<<<<<< HEAD
 query = '''
 
 '''
 
 cur.execute(query)
+=======
+cur.execute("")
+>>>>>>> parent of f84b541f (push)
 
 conn.commit()
 cur.close()

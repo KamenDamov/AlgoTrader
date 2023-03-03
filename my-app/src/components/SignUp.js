@@ -11,6 +11,14 @@ function RegistrationForm() {
   const [password, setPassword] = useState("")
   const [funds, setFunds] = useState("")
 
+  const pool = new Pool({
+    user: 'postgres',
+    host: 'localhost',
+    database: 'financial_db',
+    password: 'KaMendiNiO',
+    port: 5432, // or your custom port number
+  });
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const user = { name, email, password, funds };
