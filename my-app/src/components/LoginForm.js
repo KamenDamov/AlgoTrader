@@ -1,4 +1,4 @@
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import React, { useState } from "react";
 import axios from 'axios';
 import "./style/login.css";
@@ -6,6 +6,7 @@ import './style/global.css';
 
 
 function LoginForm() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("")
 
@@ -13,6 +14,16 @@ function LoginForm() {
     event.preventDefault();
     
     const user = { name, password };
+
+    // Send login credentials to server and redirect to dashboard if successful
+    axios.post('http://localhost:3001/login', { name, password }).then((response) => {
+      if (response.data.success) {
+        console.log("I wanna see my dashboard!")
+        navigate('/UserDashboard');
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
 
   axios.post("http://localhost:3001/login", user)
     .then((response) => {
