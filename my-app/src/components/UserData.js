@@ -1,28 +1,35 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function UserData({ username }) {
+function UserData() {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    axios.get(`/api/users/${username}`)
-      .then(response => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/user');
         setUserData(response.data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }, [username]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   if (!userData) {
-    return <p>Loading user data...</p>;
+    return <div>Loading...</div>;
   }
 
   return (
     <div>
-      <h2>{userData.username}</h2>
-      <p>Email: {userData.email}</p>
-      <p>Funds: {userData.funds}</p>
+      <h1>User Data</h1>
+      <ul>
+        <li>Username: {userData.username}</li>
+        <li>Email: {userData.Email}</li>
+        <li>Password: {userData.password}</li>
+        <li>Funds: {userData.funds}</li>
+      </ul>
     </div>
   );
 }
