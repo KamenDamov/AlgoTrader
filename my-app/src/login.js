@@ -10,11 +10,13 @@ const pool = new Pool({
   port: 5432,
 });
 
+// Create a new router
 const router = express.Router();
 
 // Add a middleware to parse JSON request bodies
 router.use(express.json());
 
+// Define a route to handle login requests
 router.post('/login', (req, res) => {
   const { name, password } = req.body;
 
