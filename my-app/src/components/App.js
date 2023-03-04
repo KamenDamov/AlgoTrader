@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './style/signup.css';
 import './style/login.css';
@@ -8,31 +8,13 @@ import SignUp from './SignUp';
 import UserDashboard from './UserDashboard';
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [userData, setUserData] = useState(null);
-
-  const handleLogin = (data) => {
-    setUserData(data);
-    setLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    setUserData(null);
-    setLoggedIn(false);
-  };
-
   return (
     <Router>
       <Routes>
-        <Route exact path="/" element={<Landing />} />
-        <Route path="/Login" element={<Login handleLogin={handleLogin} />} />
-        <Route path="/SignUp" element={<SignUp />} />
-        {loggedIn ? (
-          <Route
-            path="/UserDashboard"
-            element={<UserDashboard userData={userData} handleLogout={handleLogout} />}
-          />
-        ) : null}
+        <Route exact path="/" element={<Landing/>} />
+        <Route path="/login" element={<Login/>} />
+        <Route path="/signup" element={<SignUp/>} />
+        <Route path="/dashboard" element={<UserDashboard/>} />
       </Routes>
     </Router>
   );
