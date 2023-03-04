@@ -1,8 +1,7 @@
-import { Link } from 'react-router-dom';
-import React, { useState } from "react";
 import "./style/signup.css";
-import './style/global.css';
-
+import axios from 'axios';
+import React, { useState } from "react";
+import {Link} from 'react-router-dom'
 
 function RegistrationForm() {
   const [name, setName] = useState("");
@@ -10,21 +9,21 @@ function RegistrationForm() {
   const [password, setPassword] = useState("")
   const [funds, setFunds] = useState("")
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    
-    //const user = { name, email, password, funds };
 
-    /*axios.post("/api/users", user)
-      .then((response) => {
-        console.log(response.data);
-        // TODO: Add success message
-      })
-      .catch((error) => {
-        console.error(error);
-        // TODO: Add error message
-      })*/
-    };
+    const user = { name, email, password, funds };
+
+    try {
+      console.log(user)
+      const response = await axios.post('http://localhost:3001/api/users', user);
+      console.log(response.data);
+      console.log("Works")
+    } catch (error) {
+      console.error(error);
+      console.log("Doesnt work")
+    }
+  };
 
   return (
     <div className="hero-image">
@@ -67,8 +66,8 @@ function RegistrationForm() {
           />
 
           <button type="submit">Submit</button>
-          <Link to="/">Back to landing page</Link>
         </form>
+        <Link to="/" className="back-to-landing-page">Back to landing page</Link>
       </div>
     </div>
   );

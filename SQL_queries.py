@@ -11,7 +11,16 @@ conn = psycopg2.connect(
 # Open a cursor to perform database operations
 cur = conn.cursor()
 
-cur.execute("")
+#query = """
+#CREATE TABLE IF NOT EXISTS users (
+#    username TEXT NOT NULL,
+#    email TEXT NOT NULL,
+#    password TEXT NOT NULL, 
+#    funds FLOAT     
+#);
+#"""
+
+cur.execute(query)
 
 conn.commit()
 cur.close()
