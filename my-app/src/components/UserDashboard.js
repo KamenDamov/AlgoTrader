@@ -8,6 +8,7 @@ function UserDashboard() {
   useEffect(() => {
     // Query user data from the server using axios
     axios.get('/getUserData').then((response) => {
+      console.log("Here")
       setUserData(response.data);
     }).catch((error) => {
       console.log(error);

@@ -16,19 +16,20 @@ function LoginForm() {
     const user = { name, password };
 
     // Send login credentials to server and redirect to dashboard if successful
-    axios.post('http://localhost:3001/login', { name, password }).then((response) => {
+    /*axios.post('http://localhost:3001/login', { name, password }).then((response) => {
       if (response.data.success) {
         console.log("I wanna see my dashboard!")
         navigate('/UserDashboard');
       }
     }).catch((error) => {
       console.log(error);
-    });
+    });*/
 
   axios.post("http://localhost:3001/login", user)
     .then((response) => {
       console.log(response.data);
       console.log("Logged in")
+      navigate('/UserDashboard');
       // Store the access token in frontend state or in a cookie/local storage
     })
     .catch((error) => {
