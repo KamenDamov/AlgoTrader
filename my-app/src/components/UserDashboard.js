@@ -6,9 +6,9 @@ function UserDashboard() {
   const [newFunds, setNewFunds] = useState(0);
 
   useEffect(() => {
+    console.log("Here")
     // Query user data from the server using axios
     axios.get('/getUserData').then((response) => {
-      console.log("Here")
       setUserData(response.data);
     }).catch((error) => {
       console.log(error);

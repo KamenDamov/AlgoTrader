@@ -1,5 +1,7 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require('cors');
+const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
 
 // Create a new pool to manage database connections
@@ -12,6 +14,8 @@ const pool = new Pool({
 });
 
 const app = express();
+
+app.use(bodyParser.json());
 
 // Add a middleware to parse JSON request bodies
 app.use(express.json());
@@ -57,6 +61,39 @@ app.post('/login', (req, res) => {
       }
     }
   );
+});
+
+// Function to get user data from the database
+const getUserData = async (username) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query(`SELECT username, funds FROM users WHERE username = $1`, [username]);
+    client.release();
+    return result.rows[0];
+  } catch (error) {
+    console.log("get user data error")
+    console.log(error);
+  }
+};
+
+// API endpoint to get user data
+app.get('/getUserData', async (req, res) => {
+  const userData = await getUserData(req.user.username);
+  res.send(userData);
+});
+
+// API endpoint to modify user funds
+app.post('/modifyFunds', async (req, res) => {
+  const { funds } = req.body;
+  const { username } = req.user;
+  try {
+    const client = await pool.connect();
+    const result = await client.query(`UPDATE users SET funds = funds + $1 WHERE username = $2 RETURNING username, funds`, [funds, username]);
+    client.release();
+    res.send(result.rows[0]);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 // Start the server
