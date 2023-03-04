@@ -18,7 +18,7 @@ const app = express();
 // Parse JSON request bodies
 app.use(express.json());
 
-app.use('/api/login/', loginRouter);
+app.use('/login', loginRouter);
 
 app.use(cors());
 
