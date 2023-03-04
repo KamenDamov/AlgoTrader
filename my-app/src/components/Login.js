@@ -14,15 +14,16 @@ function LoginForm() {
     
     const user = { name, password };
 
-    axios.post("/api/login", user)
-      .then((response) => {
-        console.log(response.data);
-        console.log("Logged in")
-      })
-      .catch((error) => {
-        console.error(error);
-        console.log("Can't log in")
-      });
+  axios.post("/api/login", user)
+    .then((response) => {
+      console.log(response.data);
+      console.log("Logged in")
+      // Store the access token in frontend state or in a cookie/local storage
+    })
+    .catch((error) => {
+      console.error(error);
+      console.log("Can't log in")
+    });
     };
 
   return (
