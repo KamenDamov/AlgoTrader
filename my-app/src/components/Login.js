@@ -1,5 +1,6 @@
 import {Link} from 'react-router-dom'
 import React, { useState } from "react";
+import axios from 'axios';
 import "./style/login.css";
 import './style/global.css';
 
@@ -11,17 +12,17 @@ function LoginForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     
-    //const user = { name, password };
+    const user = { name, password };
 
-    /*axios.post("/api/users", user)
+    axios.post("/api/login", user)
       .then((response) => {
         console.log(response.data);
-        // TODO: Add success message
+        console.log("Logged in")
       })
       .catch((error) => {
         console.error(error);
-        // TODO: Add error message
-      })*/
+        console.log("Can't log in")
+      });
     };
 
   return (

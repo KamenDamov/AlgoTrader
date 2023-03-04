@@ -6,7 +6,6 @@ import Landing from './Landing';
 import Login from './Login';
 import SignUp from './SignUp';
 
-
 function App() {
   return (
     <Router>
