@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const loginRouter = require('./loging');
+const loginRouter = require('./login');
 const { Pool } = require('pg');
 
 // Create a new pool to manage database connections
