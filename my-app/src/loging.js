@@ -15,7 +15,7 @@ const router = express.Router();
 // Add a middleware to parse JSON request bodies
 router.use(express.json());
 
-router.post('/login', (req, res) => {
+router.post('/api/login/', (req, res) => {
   const { name, password } = req.body;
 
   // Check if the user exists in the database

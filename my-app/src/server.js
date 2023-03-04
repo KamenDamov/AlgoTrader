@@ -18,7 +18,7 @@ const app = express();
 // Parse JSON request bodies
 app.use(express.json());
 
-app.use('/api', loginRouter);
+app.use('/api/login/', loginRouter);
 
 app.use(cors());
 
@@ -44,6 +44,6 @@ app.post('/api/users', (req, res) => {
 });
 
 // Start the server
-app.listen(3000, () => {
-  console.log('Server listening on port 3000');
+app.listen(3001, () => {
+  console.log('Server listening on port 3001');
 });

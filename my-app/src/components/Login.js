@@ -14,7 +14,7 @@ function LoginForm() {
     
     const user = { name, password };
 
-  axios.post("/login", user)
+  axios.post("/api/login/", user)
     .then((response) => {
       console.log(response.data);
       console.log("Logged in")
