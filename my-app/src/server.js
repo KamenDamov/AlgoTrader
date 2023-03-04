@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const loginRouter = require('./login');
 const { Pool } = require('pg');
 
 // Create a new pool to manage database connections
@@ -12,14 +11,12 @@ const pool = new Pool({
   port: 5432,
 });
 
-// Create a new express application
 const app = express();
 
-// Parse JSON request bodies
+// Add a middleware to parse JSON request bodies
 app.use(express.json());
 
-app.use('/login', loginRouter);
-
+// Add CORS middleware
 app.use(cors());
 
 // Define a POST endpoint for creating new users
@@ -33,11 +30,30 @@ app.post('/api/users', (req, res) => {
     (err, result) => {
       if (err) {
         console.error(err);
-        console.log("ERROR WHEN INPUTING")
         res.status(500).json({ error: 'Internal server error' });
       } else {
         res.status(201).json({ message: 'User created successfully' });
-        console.log("Properly input")
+      }
+    }
+  );
+});
+
+// Define a POST endpoint for user login
+app.post('/login', (req, res) => {
+  const { name, password } = req.body;
+
+  // Check if the user exists in the database
+  pool.query(
+    'SELECT * FROM users WHERE username = $1 AND password = $2',
+    [name, password],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+      } else if (result.rowCount === 0) {
+        res.status(401).json({ error: 'Invalid username or password' });
+      } else {
+        res.status(200).json({ message: 'Login successful' });
       }
     }
   );

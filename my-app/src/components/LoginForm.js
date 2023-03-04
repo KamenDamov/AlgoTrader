@@ -14,7 +14,7 @@ function LoginForm() {
     
     const user = { name, password };
 
-  axios.post("http://localhost:3001/login/", user)
+  axios.post("http://localhost:3001/login", user)
     .then((response) => {
       console.log(response.data);
       console.log("Logged in")
