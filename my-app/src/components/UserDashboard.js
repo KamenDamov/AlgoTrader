@@ -6,11 +6,12 @@ function UserDashboard() {
   const [newFunds, setNewFunds] = useState(0);
 
   useEffect(() => {
-    console.log("Here")
+    
     // Query user data from the server using axios
-    axios.get('/getUserData').then((response) => {
+    axios.get('http://localhost:3001/getUserData').then((response) => {
       setUserData(response.data);
     }).catch((error) => {
+      console.log("merde")
       console.log(error);
     });
   }, []);
@@ -23,7 +24,7 @@ function UserDashboard() {
     event.preventDefault();
 
     // Modify the user's funds attribute in the database using axios
-    axios.post('/modifyFunds', { funds: newFunds }).then((response) => {
+    axios.post('http://localhost:3001/modifyFunds', { funds: newFunds }).then((response) => {
       setUserData(response.data);
       setNewFunds(0);
     }).catch((error) => {

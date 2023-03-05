@@ -66,7 +66,7 @@ app.post('/login', (req, res) => {
 // API endpoint to get user data
 app.get('/getUserData', (req, res) => {
   const { username } = req.user;
-
+  console.log("Hello friend");
   // Get user data from the database
   pool.query(
     'SELECT username, funds FROM users WHERE username = $1',
