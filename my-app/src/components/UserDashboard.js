@@ -4,6 +4,7 @@ import axios from 'axios';
 function UserDashboard() {
   const [userData, setUserData] = useState(null);
   const [newFunds, setNewFunds] = useState(0);
+  
 
   useEffect(() => {
     const token = localStorage.getItem('token'); // Retrieve JWT from local storage

@@ -77,6 +77,7 @@ const authenticateUser = (req, res, next) => {
   }
 
   try {
+    console.log(token)
     const decodedToken = jwt.verify(token, 'secret_key', { expiresIn: '1h' });
     const { name, password } = decodedToken;
 
