@@ -6,14 +6,24 @@ function UserDashboard() {
   const [newFunds, setNewFunds] = useState(0);
 
   useEffect(() => {
-    
-    // Query user data from the server using axios
-    axios.get('http://localhost:3001/getUserData').then((response) => {
-      setUserData(response.data);
-    }).catch((error) => {
-      console.log("merde")
-      console.log(error);
-    });
+    const token = localStorage.getItem('token'); // Retrieve JWT from local storage
+
+    // Set JWT in the Authorization header of the axios request
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    // Query user data from the server using axios with the Authorization header
+    axios.get('http://localhost:3001/getUserData', config)
+      .then((response) => {
+        setUserData(response.data);
+      })
+      .catch((error) => {
+        console.log("merde")
+        console.log(error);
+      });
   }, []);
 
   const handleFundsChange = (event) => {
@@ -23,13 +33,24 @@ function UserDashboard() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // Modify the user's funds attribute in the database using axios
-    axios.post('http://localhost:3001/modifyFunds', { funds: newFunds }).then((response) => {
-      setUserData(response.data);
-      setNewFunds(0);
-    }).catch((error) => {
-      console.log(error);
-    });
+    const token = localStorage.getItem('token'); // Retrieve JWT from local storage
+
+    // Set JWT in the Authorization header of the axios request
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    // Modify the user's funds attribute in the database using axios with the Authorization header
+    axios.post('http://localhost:3001/modifyFunds', { funds: newFunds }, config)
+      .then((response) => {
+        setUserData(response.data);
+        setNewFunds(0);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
