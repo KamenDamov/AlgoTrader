@@ -63,37 +63,47 @@ app.post('/login', (req, res) => {
   );
 });
 
-// Function to get user data from the database
-const getUserData = async (username) => {
-  try {
-    const client = await pool.connect();
-    const result = await client.query(`SELECT username, funds FROM users WHERE username = $1`, [username]);
-    client.release();
-    return result.rows[0];
-  } catch (error) {
-    console.log("get user data error")
-    console.log(error);
-  }
-};
-
 // API endpoint to get user data
-app.get('/getUserData', async (req, res) => {
-  const userData = await getUserData(req.user.username);
-  res.send(userData);
+app.get('/getUserData', (req, res) => {
+  const { username } = req.user;
+
+  // Get user data from the database
+  pool.query(
+    'SELECT username, funds FROM users WHERE username = $1',
+    [username],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+      } else if (result.rowCount === 0) {
+        res.status(404).json({ error: 'User not found' });
+      } else {
+        res.status(200).json(result.rows[0]);
+      }
+    }
+  );
 });
 
 // API endpoint to modify user funds
-app.post('/modifyFunds', async (req, res) => {
+app.post('/modifyFunds', (req, res) => {
   const { funds } = req.body;
   const { username } = req.user;
-  try {
-    const client = await pool.connect();
-    const result = await client.query(`UPDATE users SET funds = funds + $1 WHERE username = $2 RETURNING username, funds`, [funds, username]);
-    client.release();
-    res.send(result.rows[0]);
-  } catch (error) {
-    console.log(error);
-  }
+
+  // Update user funds in the database
+  pool.query(
+    'UPDATE users SET funds = funds + $1 WHERE username = $2 RETURNING username, funds',
+    [funds, username],
+    (err, result) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+      } else if (result.rowCount === 0) {
+        res.status(404).json({ error: 'User not found' });
+      } else {
+        res.status(200).json(result.rows[0]);
+      }
+    }
+  );
 });
 
 // Start the server
