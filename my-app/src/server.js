@@ -45,7 +45,6 @@ app.post('/api/users', (req, res) => {
 
 // Define a POST endpoint for user login
 app.post('/login', (req, res) => {
-
   const { name, password } = req.body;
 
   // Check if the user exists in the database
@@ -59,8 +58,10 @@ app.post('/login', (req, res) => {
       } else if (result.rowCount === 0) {
         res.status(401).json({ error: 'Invalid username or password' });
       } else {
-        // Generate a JWT token
-        const token = jwt.sign({ name, password }, 'secret_key', { expiresIn: '1h' });
+        // Generate a JWT with a payload containing the user ID and an expiration time
+        const token = jwt.sign({ userId: result.rows[0].id }, 'secret_key', { expiresIn: '1h' });
+
+        // Return the JWT as part of the response body
         res.status(200).json({ token });
       }
     }
