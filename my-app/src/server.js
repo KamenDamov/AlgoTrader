@@ -44,6 +44,7 @@ app.post('/api/users', (req, res) => {
 
 // Define a POST endpoint for user login
 app.post('/login', (req, res) => {
+
   const { name, password } = req.body;
 
   // Check if the user exists in the database
@@ -63,29 +64,39 @@ app.post('/login', (req, res) => {
   );
 });
 
-// API endpoint to get user data
-app.get('/getUserData', (req, res) => {
-  const { username } = req.user;
-  console.log("Hello friend");
-  // Get user data from the database
+const authenticateUser = (req, res, next) => {
+  console.log(req.body);
+  const { name, password } = req.body;
+  
+  // Check the database to see if the user exists and the password is correct
   pool.query(
-    'SELECT username, funds FROM users WHERE username = $1',
-    [username],
+    'SELECT * FROM users WHERE username = $1 AND password = $2',
+    [name, password],
     (err, result) => {
       if (err) {
+        console.log("fuck")
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });
       } else if (result.rowCount === 0) {
-        res.status(404).json({ error: 'User not found' });
+        res.status(401).json({ error: 'Invalid username or password' });
       } else {
-        res.status(200).json(result.rows[0]);
+        
+        // Attach the user object to req.user
+        req.user = result.rows[0];
+        next();
       }
     }
   );
+};
+
+app.get('/getUserData', authenticateUser, (req, res) => {
+  const { username, funds } = req.user;
+  
+  // Return user data
+  res.status(200).json({ username, funds });
 });
 
-// API endpoint to modify user funds
-app.post('/modifyFunds', (req, res) => {
+app.post('/modifyFunds', authenticateUser, (req, res) => {
   const { funds } = req.body;
   const { username } = req.user;
 
