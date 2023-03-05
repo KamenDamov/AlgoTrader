@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
+const jwt = require('jsonwebtoken');
 
 // Create a new pool to manage database connections
 const pool = new Pool({
@@ -58,35 +59,47 @@ app.post('/login', (req, res) => {
       } else if (result.rowCount === 0) {
         res.status(401).json({ error: 'Invalid username or password' });
       } else {
-        res.status(200).json({ message: 'Login successful' });
+        // Generate a JWT token
+        const token = jwt.sign({ name, password }, 'secret_key', { expiresIn: '1h' });
+        res.status(200).json({ token });
       }
     }
   );
 });
 
 const authenticateUser = (req, res, next) => {
-  console.log(req.body);
-  const { name, password } = req.body;
-  
-  // Check the database to see if the user exists and the password is correct
-  pool.query(
-    'SELECT * FROM users WHERE username = $1 AND password = $2',
-    [name, password],
-    (err, result) => {
-      if (err) {
-        console.log("fuck")
-        console.error(err);
-        res.status(500).json({ error: 'Internal server error' });
-      } else if (result.rowCount === 0) {
-        res.status(401).json({ error: 'Invalid username or password' });
-      } else {
-        
-        // Attach the user object to req.user
-        req.user = result.rows[0];
-        next();
+
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const decodedToken = jwt.verify(token, 'secret_key', { expiresIn: '1h' });
+    const { name, password } = decodedToken;
+
+    // Check the database to see if the user exists and the password is correct
+    pool.query(
+      'SELECT * FROM users WHERE username = $1 AND password = $2',
+      [name, password],
+      (err, result) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Internal server error' });
+        } else if (result.rowCount === 0) {
+          res.status(401).json({ error: 'Invalid username or password' });
+        } else {
+          // Attach the user object to req.user
+          req.user = result.rows[0];
+          next();
+        }
       }
-    }
-  );
+    );
+  } catch (err) {
+    console.log(err)
+    res.status(401).json({ error: 'Unauthorized' });
+  }
 };
 
 app.get('/getUserData', authenticateUser, (req, res) => {
