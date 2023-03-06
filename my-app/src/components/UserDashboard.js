@@ -1,29 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function UserDashboard() {
+  const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [newFunds, setNewFunds] = useState(0);
-  
 
   useEffect(() => {
-    const token = localStorage.getItem('token'); // Retrieve JWT from local storage
+    const token = localStorage.getItem('token');
 
-    // Set JWT in the Authorization header of the axios request
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
 
-    // Query user data from the server using axios with the Authorization header
     axios.get('http://localhost:3001/getUserData', config)
       .then((response) => {
         setUserData(response.data);
       })
       .catch((error) => {
-        console.log("merde")
-        console.log(error);
+        if (error.response.status === 401) {
+          localStorage.removeItem('token');
+          navigate('/login');
+        } else {
+          console.log(error);
+        }
       });
   }, []);
 
@@ -34,16 +42,14 @@ function UserDashboard() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const token = localStorage.getItem('token'); // Retrieve JWT from local storage
+    const token = localStorage.getItem('token');
 
-    // Set JWT in the Authorization header of the axios request
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
 
-    // Modify the user's funds attribute in the database using axios with the Authorization header
     axios.post('http://localhost:3001/modifyFunds', { funds: newFunds }, config)
       .then((response) => {
         setUserData(response.data);
@@ -52,6 +58,11 @@ function UserDashboard() {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
   };
 
   return (
@@ -67,6 +78,7 @@ function UserDashboard() {
             </label>
             <button type="submit">Submit</button>
           </form>
+          <button onClick={handleLogout}>Log Out</button>
         </div>
       ) : (
         <p>Loading user data...</p>
