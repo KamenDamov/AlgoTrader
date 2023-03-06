@@ -8,7 +8,9 @@ function UserDashboard() {
   const [newFunds, setNewFunds] = useState(0);
 
   useEffect(() => {
+
     const token = localStorage.getItem('token');
+    console.log(!token)
 
     if (!token) {
       navigate('/login');
@@ -21,6 +23,7 @@ function UserDashboard() {
       },
     };
 
+  //Code is good until here
     axios.get('http://localhost:3001/getUserData', config)
       .then((response) => {
         setUserData(response.data);

@@ -23,6 +23,7 @@ function LoginForm() {
 
     axios.post("http://localhost:3001/login", user)
       .then((response) => {
+        localStorage.setItem('token', response.data.token);
         console.log(response.data);
         console.log("Logged in");
         navigate('/UserDashboard');
