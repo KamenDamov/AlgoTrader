@@ -10,7 +10,7 @@ function UserDashboard() {
   useEffect(() => {
 
     const token = localStorage.getItem('token');
-    console.log(!token)
+    console.log(token)
 
     if (!token) {
       navigate('/login');
@@ -22,7 +22,8 @@ function UserDashboard() {
         Authorization: `Bearer ${token}`,
       },
     };
-
+    
+    console.log(config)
   //Code is good until here
     axios.get('http://localhost:3001/getUserData', config)
       .then((response) => {
@@ -30,6 +31,7 @@ function UserDashboard() {
       })
       .catch((error) => {
         if (error.response.status === 401) {
+          console.log("SOME ERROR");
           localStorage.removeItem('token');
           navigate('/login');
         } else {

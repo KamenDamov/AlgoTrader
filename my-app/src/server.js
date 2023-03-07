@@ -19,7 +19,10 @@ app.use(bodyParser.json());
 
 app.use(express.json());
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // replace with the URL of your React app
+  credentials: true,
+}));
 
 app.post('/api/users', (req, res) => {
   const { name, email, password, funds } = req.body;
@@ -77,7 +80,6 @@ app.post('/login', (req, res) => {
 });
 
 const authenticateUser = (req, res, next) => {
-  console.log("Hey")
   const token = req.headers.authorization;
 
   if (!token) {
@@ -85,9 +87,12 @@ const authenticateUser = (req, res, next) => {
   }
 
   try {
-    
-    const decodedToken = jwt.verify(token, 'secret_key');
+    console.log("REad token: ", token);
+    const jwtToken = token.substring(7); // remove "Bearer " from the token
+    const decodedToken = jwt.verify(jwtToken, 'secret_key');
+    console.log("Server side token: ", decodedToken);   // Add this line to check the decoded token
     const userId = decodedToken.userId;
+    console.log(userId);
 
     pool.query(
       'SELECT * FROM users WHERE id = $1',

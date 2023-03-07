@@ -24,7 +24,7 @@ function LoginForm() {
     axios.post("http://localhost:3001/login", user)
       .then((response) => {
         localStorage.setItem('token', response.data.token);
-        console.log(response.data);
+        console.log("Client side token: ", response.data);
         console.log("Logged in");
         navigate('/UserDashboard');
         // Store the access token in frontend state or in a cookie/local storage
