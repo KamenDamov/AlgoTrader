@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
+const { secret } = require('./config.js');
 const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
 
@@ -50,11 +51,12 @@ app.post('/api/users', (req, res) => {
 
 app.post('/login', (req, res) => {
   const { name, password } = req.body;
-
+  console.log(name, password);
   pool.query(
     'SELECT * FROM users WHERE username = $1',
     [name],
     (err, result) => {
+      console.log(result);
       if (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });
@@ -89,7 +91,8 @@ const authenticateUser = (req, res, next) => {
   try {
     console.log("REad token: ", token);
     const jwtToken = token.substring(7); // remove "Bearer " from the token
-    const decodedToken = jwt.verify(jwtToken, 'secret_key');
+    console.log(jwtToken, secret);
+    const decodedToken = jwt.verify(jwtToken, secret);
     console.log("Server side token: ", decodedToken);   // Add this line to check the decoded token
     const userId = decodedToken.userId;
     console.log(userId);
