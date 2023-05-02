@@ -109,7 +109,11 @@ for t in tick:
         continue
     new_period = yf.Ticker(t).history(start=startDate)
     new_period = new_period.reset_index()
-    new_period['Stock_Splits'] = new_period['Stock Splits']
+    try:        
+        new_period['Stock_Splits'] = new_period['Stock Splits'] 
+    except KeyError: 
+        print("Stock not found")
+        continue
     new_period = new_period.drop("Stock Splits", axis=1)
     new_period['Ticker'] = t 
     if 'Capital Gains' in new_period.columns: 
@@ -257,3 +261,5 @@ conn.commit()
 # Close the cursor and connection
 cur.close()
 conn.close()
+
+#TODO Remove Dupes from all_time_prices

@@ -1,0 +1,5 @@
+- Get optimal autocorrelation lag
+- Gather data with the lag 
+- Train model
+- Test model
+- Cross validate and choose best lag 
