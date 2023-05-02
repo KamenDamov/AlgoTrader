@@ -32,7 +32,6 @@ l = "abcdefghijklmnopqrstuvwxyz"
 #Getting NSYE stocks
 all_stocks = []
 for i in l:
-    break
     url = "https://en.wikipedia.org/wiki/Companies_listed_on_the_New_York_Stock_Exchange_(" + i.upper() + ")"
     data = requests.get(url)
     data = data.content
@@ -50,7 +49,7 @@ for sublist in all_stocks:
         if item not in tick: 
             final_nyse_stocks.append(item)
 all_stocks = final_nyse_stocks
-print(all_stocks)
+
 #Getting NASDAQ stocks
 nasdaq = []
 for i in l: 
@@ -72,10 +71,10 @@ all_stocks = all_stocks + new_nas
 
 #Append new stock to all_time_users
 for s in all_stocks:
-    break
+    print(s)
     info = yf.Ticker(s).history(period='max')
-    #TODO: 
-    # Append data 
+    engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
+    info.to_sql('all_time_prices', engine, if_exists = 'append', index = False)
 
 #Append missing stock data by querying most recent date
 for t in tick: 
