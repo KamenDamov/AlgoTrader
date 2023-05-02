@@ -174,6 +174,7 @@ for i in range(len(tick)):
     try:
         #Creating the df to be added to all_time_prices
         ticker = tick[i]
+        print("Doing " + ticker)
         info = yf.Ticker(ticker).history(period='max')
         info.reset_index(inplace = True)
         info['Ticker'] = ticker
