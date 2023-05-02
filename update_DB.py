@@ -71,6 +71,10 @@ for n in nasdaq:
 
 all_stocks = all_stocks + new_nas
 
+#Append newly added stocks to tickers table
+for a in all_stocks: 
+    cur.execute("INSERT INTO your_table_name (id, ticker) VALUES (DEFAULT, %s)", (a,))
+
 #Append new stock to all_time_users
 for s in all_stocks:
     print(s)
@@ -90,7 +94,7 @@ for s in all_stocks:
 
 #Append missing stock data by querying most recent date
 for t in tick: 
-    maxDateQuery = "SELECT \"Date\" FROM public.all_time_prices WHERE \"Ticker\" = "+ t +" Order by \"Date\" desc LIMIT (1);"
+    maxDateQuery = "SELECT \"Date\" FROM public.all_time_prices WHERE \"Ticker\" = '" + t + "' Order by \"Date\" desc LIMIT (1);"
     cur.execute(maxDateQuery)
     maxDate = [row[0] for row in cur.fetchall()]
     startDate = maxDate[0].strftime('%Y-%m-%d')
@@ -99,6 +103,8 @@ for t in tick:
     new_period['Stock_Splits'] = new_period['Stock Splits']
     new_period = new_period.drop("Stock Splits", axis=1)
     new_period['Ticker'] = t 
+    if 'Capital Gains' in new_period.columns: 
+            del new_period['Capital Gains']
     print(new_period.columns)
     engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
     new_period.to_sql('all_time_prices', engine, if_exists = 'append', index = False)
