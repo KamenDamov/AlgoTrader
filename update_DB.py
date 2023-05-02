@@ -8,8 +8,8 @@ import psycopg2
 import requests
 from bs4 import BeautifulSoup as bs
 import yfinance as yf
-from datetime import date
-from datetime import timedelta
+import pandas as pd
+from sqlalchemy import create_engine
 
 #DB connection
 # Connect to the PostgreSQL server
@@ -78,11 +78,17 @@ for s in all_stocks:
     # Append data 
 
 #Append missing stock data by querying most recent date
-maxDateQuery = 'SELECT "Date" FROM public.all_time_prices WHERE "Ticker" = \'MSFT\' Order by "Date" desc LIMIT (1);'
-cur.execute(maxDateQuery)
-maxDate = [row[0] for row in cur.fetchall()]
-startDate = maxDate[0].strftime('%Y-%m-%d')
-new_period = yf.Ticker('MSFT').history(start=startDate)
-new_period = new_period.reset_index()
-new_period['Ticker'] = 'MSFT' 
-print(new_period)
+for t in tick: 
+    maxDateQuery = 'SELECT "Date" FROM public.all_time_prices WHERE "Ticker" =  '+ t +' Order by "Date" desc LIMIT (1);'
+    cur.execute(maxDateQuery)
+    maxDate = [row[0] for row in cur.fetchall()]
+    startDate = maxDate[0].strftime('%Y-%m-%d')
+    new_period = yf.Ticker(t).history(start=startDate)
+    new_period = new_period.reset_index()
+    new_period['Stock_Splits'] = new_period['Stock Splits']
+    new_period = new_period.drop("Stock Splits", axis=1)
+    new_period['Ticker'] = t 
+    print(new_period.columns)
+    engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
+    new_period.to_sql('all_time_prices', engine, if_exists = 'append', index = False)
+    print(new_period)
