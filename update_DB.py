@@ -75,12 +75,18 @@ all_stocks = all_stocks + new_nas
 for s in all_stocks:
     print(s)
     info = yf.Ticker(s).history(period='max')
-    engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
-    info.to_sql('all_time_prices', engine, if_exists = 'append', index = False)
+    print(len(info))
+    if 'Capital Gains' in info.columns: 
+            del info['Capital Gains']
+    if len(info) > 0:
+        info['Stock_Splits'] = info['Stock Splits']
+        info = info.drop("Stock Splits", axis=1)
+        engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
+        info.to_sql('all_time_prices', engine, if_exists = 'append', index = False)
 
 #Append missing stock data by querying most recent date
 for t in tick: 
-    maxDateQuery = 'SELECT "Date" FROM public.all_time_prices WHERE "Ticker" =  '+ t +' Order by "Date" desc LIMIT (1);'
+    maxDateQuery = "SELECT \"Date\" FROM public.all_time_prices WHERE \"Ticker\" = "+ t + " Order by \"Date\" desc LIMIT (1);"
     cur.execute(maxDateQuery)
     maxDate = [row[0] for row in cur.fetchall()]
     startDate = maxDate[0].strftime('%Y-%m-%d')
