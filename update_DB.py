@@ -73,7 +73,9 @@ all_stocks = all_stocks + new_nas
 
 #Append newly added stocks to tickers table
 for a in all_stocks: 
-    cur.execute("INSERT INTO your_table_name (id, ticker) VALUES (DEFAULT, %s)", (a,))
+    cur.execute("INSERT INTO tickers (id, ticker) VALUES (DEFAULT, %s)", (a,))
+
+conn.commit()
 
 #Append new stock to all_time_users
 for s in all_stocks:
@@ -92,12 +94,19 @@ for s in all_stocks:
         info.to_sql('all_time_prices', engine, if_exists = 'append', index = False)
         conn.commit()
 
+#TODO REMOVE DUPLCIATES
+
 #Append missing stock data by querying most recent date
 for t in tick: 
+    print(t)
     maxDateQuery = "SELECT \"Date\" FROM public.all_time_prices WHERE \"Ticker\" = '" + t + "' Order by \"Date\" desc LIMIT (1);"
     cur.execute(maxDateQuery)
     maxDate = [row[0] for row in cur.fetchall()]
-    startDate = maxDate[0].strftime('%Y-%m-%d')
+    try: 
+        startDate = maxDate[0].strftime('%Y-%m-%d')
+    except IndexError:
+        print('No stock info') 
+        continue
     new_period = yf.Ticker(t).history(start=startDate)
     new_period = new_period.reset_index()
     new_period['Stock_Splits'] = new_period['Stock Splits']
@@ -108,6 +117,7 @@ for t in tick:
     print(new_period.columns)
     engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
     new_period.to_sql('all_time_prices', engine, if_exists = 'append', index = False)
+    conn.commit()
     print(new_period)
 
 #Update momentum
