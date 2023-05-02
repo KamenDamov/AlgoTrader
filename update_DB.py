@@ -81,12 +81,16 @@ for s in all_stocks:
     if len(info) > 0:
         info['Stock_Splits'] = info['Stock Splits']
         info = info.drop("Stock Splits", axis=1)
+        info = info.reset_index()
+        info['Ticker'] = s
+        print(info)
         engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
         info.to_sql('all_time_prices', engine, if_exists = 'append', index = False)
+        conn.commit()
 
 #Append missing stock data by querying most recent date
 for t in tick: 
-    maxDateQuery = "SELECT \"Date\" FROM public.all_time_prices WHERE \"Ticker\" = "+ t + " Order by \"Date\" desc LIMIT (1);"
+    maxDateQuery = "SELECT \"Date\" FROM public.all_time_prices WHERE \"Ticker\" = "+ t +" Order by \"Date\" desc LIMIT (1);"
     cur.execute(maxDateQuery)
     maxDate = [row[0] for row in cur.fetchall()]
     startDate = maxDate[0].strftime('%Y-%m-%d')
