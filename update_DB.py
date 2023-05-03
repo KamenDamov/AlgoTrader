@@ -80,6 +80,7 @@ conn.commit()
 #Append new stock to all_time_users
 for s in all_stocks:
     print(s)
+    #Check if data is already up to date
     info = yf.Ticker(s).history(period='max')
     print(len(info))
     if 'Capital Gains' in info.columns: 
