@@ -105,7 +105,7 @@ for t in tick:
     cur.execute(maxDateQuery)
     maxDate = [row[0] for row in cur.fetchall()]
     try: 
-        startDate = maxDate[0].strftime('%Y-%m-%d') + timedelta(days = 1)
+        startDate = datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d') + timedelta(days = 1)
     except IndexError:
         print('No stock info') 
         continue
