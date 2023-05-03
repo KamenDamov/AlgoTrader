@@ -12,6 +12,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 import numpy as np
 from scipy import stats
+from datetime import datetime, timedelta
 
 #DB connection
 # Connect to the PostgreSQL server
@@ -104,7 +105,7 @@ for t in tick:
     cur.execute(maxDateQuery)
     maxDate = [row[0] for row in cur.fetchall()]
     try: 
-        startDate = maxDate[0].strftime('%Y-%m-%d')
+        startDate = maxDate[0].strftime('%Y-%m-%d') + timedelta(days = 1)
     except IndexError:
         print('No stock info') 
         continue
@@ -257,10 +258,10 @@ print(momentum.columns)
 engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
 momentum.to_sql(name='momentum', con=engine, if_exists='replace', index=False)
 
-# Commit the transaction
+#Commit the transaction
 conn.commit()
 
-# Close the cursor and connection
+#Close the cursor and connection
 cur.close()
 conn.close()
 
