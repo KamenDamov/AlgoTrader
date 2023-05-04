@@ -31,7 +31,7 @@ cur.execute("SELECT Ticker FROM tickers")
 tick = [row[0] for row in cur.fetchall()]
 
 indicators_table = """
-CREATE TABLE indicators (
+CREATE TABLE IF NOT EXISTS indicators (
     Ticker TEXT,
     RSI FLOAT,
     A_D FLOAT,
@@ -39,4 +39,8 @@ CREATE TABLE indicators (
     Last_200_MovAvg FLOAT
 );
 """
+
+
+
+
 
