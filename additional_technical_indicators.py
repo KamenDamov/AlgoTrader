@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS indicators (
 );
 """
 
-
+for t in tick: 
+    #Produce moving avg
 
 
 
