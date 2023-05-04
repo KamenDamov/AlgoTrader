@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS all_time_prices (
     Volume FLOAT,
     Dividends FLOAT, 
     Stock_Splits FLOAT,
+    Returns FLOAT,
     Volatility_30_Day FLOAT, 
     Ticker TEXT NOT NULL    
 );
@@ -45,7 +46,7 @@ CREATE TABLE IF NOT EXISTS all_time_prices (
 cur.execute(all_time_prices_query)
 cur.execute("SELECT Ticker FROM tickers")
 tick = [row[0] for row in cur.fetchall()]
-all_time_cols = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock_Splits', 'Volatility_30_Day','Ticker']
+all_time_cols = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock_Splits', 'Returns', 'Volatility_30_Day','Ticker']
 all_time = pd.DataFrame(columns = all_time_cols)
 count = 0 
 for i in range(len(tick)): 
@@ -60,10 +61,10 @@ for i in range(len(tick)):
         # Calculate the daily returns
         try: 
             info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
-            info['Volatility'] = info['Returns'].rolling(window=30).std() * np.sqrt(252)
+            info['Volatility_30_Day'] = info['Returns'].rolling(window=30).std() * np.sqrt(252)
         except: 
             info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
-            info['Volatility'] = info['Returns'].rolling(window=len(info['Returns'])).std() * np.sqrt(252)
+            info['Volatility_30_Day'] = info['Returns'].rolling(window=len(info['Returns'])).std() * np.sqrt(252)
         info.rename({'Stock Splits':'Stock_Splits'},axis = 1,inplace = True)
         info['Volume'] = info['Volume'].astype(float)
         if 'Capital Gains' in info.columns: 

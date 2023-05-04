@@ -94,17 +94,11 @@ for s in all_stocks:
 
         # Calculate the daily returns
         try: 
-            daily_returns = info["Close"].iloc[-30:].pct_change()
-            print(daily_returns)
-            # Calculate the daily volatility
-            daily_volatility = daily_returns.std()
-            info['Volatility'] = daily_volatility
+            info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
+            info['Volatility'] = info['Returns'].rolling(window=30).std() * np.sqrt(252)
         except: 
-            daily_returns = info["Close"].iloc[-len(info['Close']):].pct_change()
-            print(daily_returns)
-            # Calculate the daily volatility
-            daily_volatility = daily_returns.std()
-            info['Volatility'] = daily_volatility
+            info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
+            info['Volatility'] = info['Returns'].rolling(window=len(info['Returns'])).std() * np.sqrt(252)
 
         info['Ticker'] = s
         print(info)
@@ -135,17 +129,11 @@ for t in tick:
 
     # Calculate the daily returns
     try: 
-        daily_returns = new_period["Close"].iloc[-30:].pct_change()
-        print(daily_returns)
-        # Calculate the daily volatility
-        daily_volatility = daily_returns.std()
-        new_period['Volatility'] = daily_volatility
+        info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
+        info['Volatility'] = info['Returns'].rolling(window=30).std() * np.sqrt(252)
     except: 
-        daily_returns = new_period["Close"].iloc[-len(new_period['Close']):].pct_change()
-        print(daily_returns)
-        # Calculate the daily volatility
-        daily_volatility = daily_returns.std()
-        new_period['Volatility'] = daily_volatility
+        info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
+        info['Volatility'] = info['Returns'].rolling(window=len(info['Returns'])).std() * np.sqrt(252)
 
     new_period = new_period.drop("Stock Splits", axis=1)
     new_period['Ticker'] = t 
