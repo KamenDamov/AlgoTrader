@@ -41,12 +41,13 @@ CREATE TABLE IF NOT EXISTS indicators (
 );
 """
 
-# Create an empty DataFrame to store the results
-results = pd.DataFrame(columns=['Ticker', 'Last_200_MovAvg', 'RSI', 'A_D', 'ADX', 'Recommendation'])
 for t in tick: 
+    print("Producing for " + t)
     #Produce moving avg
     df = pd.read_sql_query("SELECT * FROM all_time_prices WHERE \"Ticker\" = '"+t+"'", conn)
     print(df)
+    if len(df) == 0: 
+        continue
 
     # Calculate the 200-day moving average
     try: 
@@ -95,12 +96,14 @@ for t in tick:
     else:
         recommendation = 'Hold'
 
-    # Append the results to the DataFrame
-    results = results.append(
-        {'Ticker': t, 'Last_200_MovAvg': df['MA'].iloc[-1], 'RSI': rsi.iloc[-1], 'A_D': df['AD'].iloc[-1],
-         'ADX': df['ADX'].iloc[-1], 'Recommendation': recommendation}, ignore_index=True)
+    # create the SQL query with the variable values
+    update_query = """
+        INSERT INTO indicators (Ticker, RSI, A_D, ADX, Last_200_MovAvg, Recommendation)
+        VALUES ('{}', {}, {}, {}, {}, '{}');
+    """.format(t, rsi.iloc[-1], df['AD'].iloc[-1], df['ADX'].iloc[-1], df['MA'].iloc[-1], recommendation)
     
-    print(results)
-
-
-
+    cur.execute(update_query)
+    conn.commit()
+cur.close()
+conn.close()
+    
