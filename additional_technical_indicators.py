@@ -15,6 +15,8 @@ from sqlalchemy import create_engine
 import numpy as np
 from scipy import stats
 from datetime import datetime, timedelta
+import math
+
 # Connect to the PostgreSQL server
 conn = psycopg2.connect(
     host="localhost",
@@ -41,7 +43,13 @@ CREATE TABLE IF NOT EXISTS indicators (
 );
 """
 
+cur.execute(indicators_table)
+
 for t in tick: 
+    curr_ticks = pd.read_sql_query("SELECT \"Ticker\" FROM indicators;", conn)
+    if t in curr_ticks: 
+        print(t + " was skipped")
+        continue
     print("Producing for " + t)
     #Produce moving avg
     df = pd.read_sql_query("SELECT * FROM all_time_prices WHERE \"Ticker\" = '"+t+"'", conn)
@@ -100,7 +108,7 @@ for t in tick:
     update_query = """
         INSERT INTO indicators (Ticker, RSI, A_D, ADX, Last_200_MovAvg, Recommendation)
         VALUES ('{}', {}, {}, {}, {}, '{}');
-    """.format(t, rsi.iloc[-1], df['AD'].iloc[-1], df['ADX'].iloc[-1], df['MA'].iloc[-1], recommendation)
+    """.format(t, 0 if math.isnan(rsi.iloc[-1]) else rsi.iloc[-1], 0 if math.isnan(df['AD'].iloc[-1]) else df['AD'].iloc[-1], 0 if math.isnan(df['ADX'].iloc[-1]) else df['ADX'].iloc[-1], 0 if math.isnan(df['MA'].iloc[-1]) else df['MA'].iloc[-1], recommendation)
     
     cur.execute(update_query)
     conn.commit()
