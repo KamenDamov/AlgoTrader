@@ -42,6 +42,14 @@ CREATE TABLE IF NOT EXISTS indicators (
 
 for t in tick: 
     #Produce moving avg
+    df = pd.read_sql_query("SELECT * FROM all_time_prices WHERE \"Ticker\" = '"+t+"'", conn)
+    print(df)
+
+    #Compute rolling avg
+    rollAvg = df['Close'].rolling(window=200).mean()
+    
+    #
+    break
 
 
 
