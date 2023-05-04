@@ -13,6 +13,7 @@ from sqlalchemy import create_engine
 import numpy as np
 from scipy import stats
 from datetime import datetime, timedelta
+import math
 
 #DB connection
 # Connect to the PostgreSQL server
@@ -260,6 +261,86 @@ momentum.to_sql(name='momentum', con=engine, if_exists='replace', index=False)
 
 #Commit the transaction
 conn.commit()
+
+#Get the tickers as a list
+cur.execute("SELECT Ticker FROM tickers")
+tick = [row[0] for row in cur.fetchall()]
+
+indicators_table = """
+CREATE TABLE IF NOT EXISTS indicators (
+    Ticker TEXT,
+    RSI FLOAT,
+    A_D FLOAT,
+    ADX FLOAT,
+    Last_200_MovAvg FLOAT,
+    Recommendation TEXT
+);
+"""
+
+cur.execute(indicators_table)
+
+for t in tick: 
+    print("Producing for " + t)
+    #Produce moving avg
+    df = pd.read_sql_query("SELECT * FROM all_time_prices WHERE \"Ticker\" = '"+t+"'", conn)
+    print(df)
+    if len(df) == 0: 
+        continue
+
+    # Calculate the 200-day moving average
+    try: 
+        df['MA'] = df['Close'].rolling(window=200).mean()
+    except IndexError: 
+        df['MA'] = df['Close'].rolling(window=len(df['Close'])).mean()
+    #Compute RSI
+    delta = df['Close'].diff()
+    gain = delta.where(delta > 0, 0)
+    loss = -delta.where(delta < 0, 0)
+    try: 
+        avg_gain = gain.rolling(window=14).mean()
+        avg_loss = loss.rolling(window=14).mean()
+    except IndexError:
+        avg_gain = gain.rolling(window=len(gain)).mean()
+        avg_loss = loss.rolling(window=len(loss)).mean()
+    rs = avg_gain / avg_loss
+    rsi = 100 - (100 / (1 + rs))
+    print(rsi.iloc[-1])
+
+    #Compute A/D lines
+    df['UpMove'] = df['High'] - df['High'].shift(1)
+    df['DownMove'] = df['Low'].shift(1) - df['Low']
+    df['UpVolume'] = df['UpMove'] * df['Volume']
+    df['DownVolume'] = df['DownMove'] * df['Volume']
+    df['PosDM'] = df['UpMove']
+    df['NegDM'] = df['DownMove']
+    df.loc[df.UpMove < df.DownMove, 'PosDM'] = 0
+    df.loc[df.UpMove > df.DownMove, 'NegDM'] = 0
+    df['PosDI'] = df['PosDM'].rolling(window=14).mean()
+    df['NegDI'] = df['NegDM'].rolling(window=14).mean()
+    df['AD'] = (df['PosDI'] - df['NegDI']) / (df['PosDI'] + df['NegDI'])
+    print(df)
+
+    # Calculate ADX
+    df['ADX'] = 100 * (df['PosDI'] - df['NegDI']) / (df['PosDI'] + df['NegDI'])
+    df['ADX'] = df['ADX'].rolling(window=14).mean()
+
+    # Determine the recommendation
+    if df['Close'].iloc[-1] > df['MA'].iloc[-1] and rsi.iloc[-1] > 70 and df['AD'].iloc[-1] > df['AD'].iloc[
+        -2] and df['ADX'].iloc[-1] > 25:
+        recommendation = 'Buy'
+    elif df['Close'].iloc[-1] < df['MA'].iloc[-1] and rsi.iloc[-1] < 30 and df['AD'].iloc[-1] < df['AD'].iloc[
+        -2] and df['ADX'].iloc[-1] > 25:
+        recommendation = 'Sell'
+    else:
+        recommendation = 'Hold'
+
+    # create the SQL query with the variable values
+    update_query = """
+        "UPDATE indicators SET RSI = {}, A_D = {}, ADX = {}, Last_200_MovAvg = {}, Recommendation = '{}' WHERE ticker_symbol = '{}';"
+    """.format(0 if math.isnan(rsi.iloc[-1]) else rsi.iloc[-1], 0 if math.isnan(df['AD'].iloc[-1]) else df['AD'].iloc[-1], 0 if math.isnan(df['ADX'].iloc[-1]) else df['ADX'].iloc[-1], 0 if math.isnan(df['MA'].iloc[-1]) else df['MA'].iloc[-1], recommendation, t)
+    
+    cur.execute(update_query)
+    conn.commit()
 
 #Close the cursor and connection
 cur.close()
