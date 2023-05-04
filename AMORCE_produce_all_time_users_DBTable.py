@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS all_time_prices (
     Volume FLOAT,
     Dividends FLOAT, 
     Stock_Splits FLOAT,
-    Volatility FLOAT, 
+    Volatility_30_Day FLOAT, 
     Ticker TEXT NOT NULL    
 );
 '''
@@ -59,17 +59,11 @@ for i in range(len(tick)):
 
         # Calculate the daily returns
         try: 
-            daily_returns = info["Close"].iloc[-30:].pct_change()
-            print(daily_returns)
-            # Calculate the daily volatility
-            daily_volatility = daily_returns.std()
-            info['Volatility'] = daily_volatility
+            info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
+            info['Volatility'] = info['Returns'].rolling(window=30).std() * np.sqrt(252)
         except: 
-            daily_returns = info["Close"].iloc[-len(info['Close']):].pct_change()
-            print(daily_returns)
-            # Calculate the daily volatility
-            daily_volatility = daily_returns.std()
-            info['Volatility'] = daily_volatility
+            info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
+            info['Volatility'] = info['Returns'].rolling(window=len(info['Returns'])).std() * np.sqrt(252)
         info.rename({'Stock Splits':'Stock_Splits'},axis = 1,inplace = True)
         info['Volume'] = info['Volume'].astype(float)
         if 'Capital Gains' in info.columns: 

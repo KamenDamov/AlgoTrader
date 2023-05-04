@@ -132,6 +132,21 @@ for t in tick:
     except KeyError: 
         print("Stock not found")
         continue
+
+    # Calculate the daily returns
+    try: 
+        daily_returns = new_period["Close"].iloc[-30:].pct_change()
+        print(daily_returns)
+        # Calculate the daily volatility
+        daily_volatility = daily_returns.std()
+        new_period['Volatility'] = daily_volatility
+    except: 
+        daily_returns = new_period["Close"].iloc[-len(new_period['Close']):].pct_change()
+        print(daily_returns)
+        # Calculate the daily volatility
+        daily_volatility = daily_returns.std()
+        new_period['Volatility'] = daily_volatility
+
     new_period = new_period.drop("Stock Splits", axis=1)
     new_period['Ticker'] = t 
     if 'Capital Gains' in new_period.columns: 
