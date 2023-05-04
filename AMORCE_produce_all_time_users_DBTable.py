@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS all_time_prices (
 cur.execute(all_time_prices_query)
 cur.execute("SELECT Ticker FROM tickers")
 tick = [row[0] for row in cur.fetchall()]
-all_time_cols = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock_Splits', 'Volatility','Ticker']
+all_time_cols = ['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock_Splits', 'Volatility_30_Day','Ticker']
 all_time = pd.DataFrame(columns = all_time_cols)
 count = 0 
 for i in range(len(tick)): 
@@ -56,12 +56,26 @@ for i in range(len(tick)):
         info = yf.Ticker(ticker).history(period='max')
         info.reset_index(inplace = True)
         info['Ticker'] = ticker
+
+        # Calculate the daily returns
+        try: 
+            daily_returns = info["Close"].iloc[-30:].pct_change()
+            print(daily_returns)
+            # Calculate the daily volatility
+            daily_volatility = daily_returns.std()
+            info['Volatility'] = daily_volatility
+        except: 
+            daily_returns = info["Close"].iloc[-len(info['Close']):].pct_change()
+            print(daily_returns)
+            # Calculate the daily volatility
+            daily_volatility = daily_returns.std()
+            info['Volatility'] = daily_volatility
         info.rename({'Stock Splits':'Stock_Splits'},axis = 1,inplace = True)
         info['Volume'] = info['Volume'].astype(float)
         if 'Capital Gains' in info.columns: 
             del info['Capital Gains']
         print(info)
-        
+        break
         # Append the first dataframe to the table
         #all_time = pd.concat([all_time, info])
 

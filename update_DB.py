@@ -91,6 +91,21 @@ for s in all_stocks:
         info['Stock_Splits'] = info['Stock Splits']
         info = info.drop("Stock Splits", axis=1)
         info = info.reset_index()
+
+        # Calculate the daily returns
+        try: 
+            daily_returns = info["Close"].iloc[-30:].pct_change()
+            print(daily_returns)
+            # Calculate the daily volatility
+            daily_volatility = daily_returns.std()
+            info['Volatility'] = daily_volatility
+        except: 
+            daily_returns = info["Close"].iloc[-len(info['Close']):].pct_change()
+            print(daily_returns)
+            # Calculate the daily volatility
+            daily_volatility = daily_returns.std()
+            info['Volatility'] = daily_volatility
+
         info['Ticker'] = s
         print(info)
         engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
