@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS indicators (
 cur.execute(indicators_table)
 
 for t in tick: 
-    curr_ticks = pd.read_sql_query("SELECT \"Ticker\" FROM indicators;", conn)
+    curr_ticks = pd.read_sql_query("SELECT \"ticker\" FROM indicators;", conn)['ticker'].tolist()
     if t in curr_ticks: 
         print(t + " was skipped")
         continue
