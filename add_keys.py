@@ -12,17 +12,24 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 query = """
--- Add foreign key constraint to the momentum table
-ALTER TABLE momentum ADD CONSTRAINT fk_momentum_tickers
-    FOREIGN KEY (Ticker) REFERENCES tickers(ticker);
-
 -- Add foreign key constraint to the all_time_prices table
-ALTER TABLE all_time_prices ADD CONSTRAINT fk_all_time_prices_tickers
-    FOREIGN KEY (Ticker) REFERENCES tickers(Ticker);
+ALTER TABLE all_time_prices
+ADD CONSTRAINT Prices_Ticker_id_fkey
+FOREIGN KEY (Ticker)
+REFERENCES tickers(ticker);
+
+
+-- Add foreign key constraint to the momentum table
+ALTER TABLE momentum
+ADD CONSTRAINT Prices_Ticker_id_fkey
+FOREIGN KEY (Ticker)
+REFERENCES tickers(ticker);
 
 -- Add foreign key constraint to the indicators table
-ALTER TABLE indicators ADD CONSTRAINT fk_indicators_tickers
-    FOREIGN KEY (ticker) REFERENCES tickers(Ticker);
+ALTER TABLE indicators
+ADD CONSTRAINT Prices_Ticker_id_fkey
+FOREIGN KEY (ticker)
+REFERENCES tickers(ticker);
 """
 
 cur.execute(query)
