@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Define stock parameters
-mean_return = 0.05
-volatility = 0.2
+mean_return = 0.005
+volatility = 0.002
 current_price = 100
 
 # Set number of simulations and time horizon
