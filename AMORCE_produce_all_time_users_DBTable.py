@@ -70,7 +70,6 @@ for i in range(len(tick)):
         if 'Capital Gains' in info.columns: 
             del info['Capital Gains']
         print(info)
-        break
         # Append the first dataframe to the table
         #all_time = pd.concat([all_time, info])
 

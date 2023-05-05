@@ -29,7 +29,7 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 # execute the DROP TABLE SQL command
-cur.execute("DROP TABLE indicators;")
+cur.execute("DROP TABLE all_time_prices;")
 
 # commit the changes
 conn.commit()
