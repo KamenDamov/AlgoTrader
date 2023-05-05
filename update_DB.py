@@ -75,7 +75,7 @@ all_stocks = all_stocks + new_nas
 
 #Append newly added stocks to tickers table
 for a in all_stocks: 
-    cur.execute("INSERT INTO tickers (id, ticker) VALUES (DEFAULT, %s)", (a,))
+    cur.execute("INSERT INTO tickers (ID, Ticker) VALUES (DEFAULT, %s)", (a,))
 
 conn.commit()
 
