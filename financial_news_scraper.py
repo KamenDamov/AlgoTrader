@@ -47,7 +47,6 @@ for t in tick:
         except IndexError: 
             print("DAte string not found")
             date_string = " "
-        print(date_string)
         try:
             parsed_date = parser.parse(date_string)
             date = parsed_date.strftime("%Y-%m-%d")
@@ -77,18 +76,21 @@ for t in tick:
             allDates.append(compare)
         except ValueError:
             continue
-    mostRecent = max(allDates).strftime("%Y-%m-%d")
-
+    try: 
+        mostRecent = max(allDates).strftime("%Y-%m-%d")
+    except ValueError:
+        continue
     newsToKeep = []
     for i in range(len(news)): 
         if news[i][1] == mostRecent: 
             newsToKeep.append(news[i])
     print(newsToKeep)
-    try: 
-        print((t,date,result[0]))
-        cur.execute("INSERT INTO financial_news (ticker, date, news) VALUES (%s, %s, %s)", (t,date,result[0]))
-        conn.commit()
-    except IndexError: 
-        print("No news found")
-        cur.execute("INSERT INTO financial_news (ticker, date, news) VALUES (%s, %s, %s)", (t,date," "))
-        conn.commit()
+    for news in newsToKeep:
+        try: 
+            print(news)
+            cur.execute("INSERT INTO financial_news (ticker, date, news, source) VALUES (%s, %s, %s, %s)", (news[0], news[1], news[2], news[3]))
+            conn.commit()
+        except IndexError: 
+            print("No news found")
+            cur.execute("INSERT INTO financial_news (ticker, date, news, source) VALUES (%s, %s, %s)", (news[0], news[1], news[2], news[3]))
+            conn.commit()
