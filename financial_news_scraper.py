@@ -4,6 +4,8 @@
 #Imports
 import requests
 from bs4 import BeautifulSoup as bs
+from datetime import datetime
+from dateutil import parser
 
 url = "https://www.marketwatch.com/investing/stock/aapl"
 target = "marketshare"
@@ -16,5 +18,11 @@ for element in soup.select('.article__content'):
     headline = ''
     date = ''
     if "marketwatch" in currNews[-1].lower(): 
-        print(currNews[-1].split("\n"))
+        date_string = currNews[-1].split("\n")[-2]
+        parsed_date = parser.parse(date_string)
+        date = parsed_date.strftime("%Y-%m-%d")
+
+        headline = currNews
+        print(headline)
+        print(date)
     #print("\n\n\n")
