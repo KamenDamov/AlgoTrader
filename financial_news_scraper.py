@@ -2,6 +2,7 @@
 #Use chatgpt for recommended stocks based on metrics
 
 #Imports
+import dateutil
 import psycopg2
 import requests
 from bs4 import BeautifulSoup as bs
@@ -34,28 +35,55 @@ for t in tick:
     data = requests.get(url).content
     soup = bs(data, 'html.parser') 
     news = []
+
+    #Grab all the news from most recent date
     for element in soup.select('.article__content'):
         currNews = element.text.strip().split("  ")
-        #print(currNews[-1].lower())
         headline = []
         date = []
-        if "marketwatch" in currNews[-1].lower(): 
+        source = currNews[-1].split("\n")[-1]
+        try:
             date_string = currNews[-1].split("\n")[-2]
+        except IndexError: 
+            print("DAte string not found")
+            date_string = " "
+        print(date_string)
+        try:
             parsed_date = parser.parse(date_string)
             date = parsed_date.strftime("%Y-%m-%d")
+        except dateutil.parser._parser.ParserError:
+            print("NO date")
+            date = " "        
+        headline = currNews[:-2]
 
-            headline = currNews[:-2]
+        result = []
+        current_word = ""
+        for element in headline:
+            if element.strip() == "":
+                continue  # Skip empty strings and newline characters
+            current_word += element.strip() + " "
 
-            result = []
-            current_word = ""
+        if current_word != "":
+            result.append(current_word.strip())
+        try:
+            news.append((t,date,result[0],source))
+        except IndexError: 
+            news.append((t,date," ", source))
+    allDates = []
+    for i in range(len(news)):
+        try:
+            compare = datetime.strptime(news[i][1], "%Y-%m-%d")
+            allDates.append(compare)
+        except ValueError:
+            continue
+    print(max(allDates))
 
-            for element in headline:
-                if element.strip() == "":
-                    continue  # Skip empty strings and newline characters
-                current_word += element.strip() + " "
-
-            if current_word != "":
-                result.append(current_word.strip())
-
-            news.append((t,result[0],date))
-        #print("\n\n\n")
+    break
+    try: 
+        print((t,date,result[0]))
+        cur.execute("INSERT INTO financial_news (ticker, date, news) VALUES (%s, %s, %s)", (t,date,result[0]))
+        conn.commit()
+    except IndexError: 
+        print("No news found")
+        cur.execute("INSERT INTO financial_news (ticker, date, news) VALUES (%s, %s, %s)", (t,date," "))
+        conn.commit()
