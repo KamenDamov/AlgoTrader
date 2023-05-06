@@ -69,6 +69,7 @@ for t in tick:
             news.append((t,date,result[0],source))
         except IndexError: 
             news.append((t,date," ", source))
+
     allDates = []
     for i in range(len(news)):
         try:
@@ -76,9 +77,13 @@ for t in tick:
             allDates.append(compare)
         except ValueError:
             continue
-    print(max(allDates))
+    mostRecent = max(allDates).strftime("%Y-%m-%d")
 
-    break
+    newsToKeep = []
+    for i in range(len(news)): 
+        if news[i][1] == mostRecent: 
+            newsToKeep.append(news[i])
+    print(newsToKeep)
     try: 
         print((t,date,result[0]))
         cur.execute("INSERT INTO financial_news (ticker, date, news) VALUES (%s, %s, %s)", (t,date,result[0]))
