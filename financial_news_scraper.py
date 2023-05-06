@@ -13,6 +13,8 @@ draftNames=[]
 for element in soup.select('.article__content'):
     currNews = element.text.strip().split("  ")
     #print(currNews[-1].lower())
+    headline = ''
+    date = ''
     if "marketwatch" in currNews[-1].lower(): 
-        print(currNews)
+        print(currNews[-1].split("\n"))
     #print("\n\n\n")
