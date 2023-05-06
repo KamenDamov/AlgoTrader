@@ -11,5 +11,8 @@ data = requests.get(url).content
 soup = bs(data, 'html.parser') 
 draftNames=[]
 for element in soup.select('.article__content'):
-    print(element.text.strip())
+    currNews = element.text.strip().split("  ")
+    #print(currNews[-1].lower())
+    if "marketwatch" in currNews[-1].lower(): 
+        print(currNews)
     #print("\n\n\n")
