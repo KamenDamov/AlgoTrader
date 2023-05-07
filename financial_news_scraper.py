@@ -8,6 +8,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 from datetime import datetime
 from dateutil import parser
+import time
 
 #DB connection
 # Connect to the PostgreSQL server
@@ -30,6 +31,8 @@ tick = [row[0] for row in cur.fetchall()]
 # Produce record and push to db
 #  
 for t in tick:
+    time.sleep(60)
+    print("Producing for: " + t)
     url = "https://www.marketwatch.com/investing/stock/" + t.lower()
     target = "marketshare"
     data = requests.get(url).content
