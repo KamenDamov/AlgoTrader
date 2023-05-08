@@ -32,6 +32,7 @@ tick = [row[0] for row in cur.fetchall()]
 #  
 for t in tick:
     time.sleep(60)
+    #Testing to see why ABT has no news
     print("Producing for: " + t)
     url = "https://www.marketwatch.com/investing/stock/" + t.lower()
     target = "marketshare"
@@ -45,6 +46,7 @@ for t in tick:
         headline = []
         date = []
         source = currNews[-1].split("\n")[-1]
+        print("This: "+str(currNews))
         try:
             date_string = currNews[-1].split("\n")[-2]
         except IndexError: 
@@ -55,7 +57,7 @@ for t in tick:
             date = parsed_date.strftime("%Y-%m-%d")
         except dateutil.parser._parser.ParserError:
             print("NO date")
-            date = " "        
+            date = "9999-09-09"        
         headline = currNews[:-2]
 
         result = []
@@ -70,7 +72,8 @@ for t in tick:
         try:
             news.append((t,date,result[0],source))
         except IndexError: 
-            news.append((t,date," ", source))
+            continue
+            #news.append((t,date," ", source))
 
     allDates = []
     for i in range(len(news)):
@@ -83,17 +86,18 @@ for t in tick:
         mostRecent = max(allDates).strftime("%Y-%m-%d")
     except ValueError:
         continue
-    newsToKeep = []
-    for i in range(len(news)): 
-        if news[i][1] == mostRecent: 
-            newsToKeep.append(news[i])
-    print(newsToKeep)
-    for news in newsToKeep:
+
+    #newsToKeep = []
+    #for i in range(len(news)): 
+    #    if news[i][1] == mostRecent: 
+    #        newsToKeep.append(news[i])
+    #print(newsToKeep)
+    for news in news:
         try: 
             print(news)
             cur.execute("INSERT INTO financial_news (ticker, date, news, source) VALUES (%s, %s, %s, %s)", (news[0], news[1], news[2], news[3]))
             conn.commit()
         except IndexError: 
             print("No news found")
-            cur.execute("INSERT INTO financial_news (ticker, date, news, source) VALUES (%s, %s, %s)", (news[0], news[1], news[2], news[3]))
+            cur.execute("INSERT INTO financial_news (ticker, date, news, source) VALUES (%s, %s, %s, %s)", (news[0], news[1], news[2], news[3]))
             conn.commit()
