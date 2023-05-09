@@ -31,7 +31,7 @@ tick = [row[0] for row in cur.fetchall()]
 # Produce record and push to db
 #  
 for t in tick:
-    time.sleep(60)
+    time.sleep(10)
     #Testing to see why ABT has no news
     print("Producing for: " + t)
     url = "https://www.marketwatch.com/investing/stock/" + t.lower()
