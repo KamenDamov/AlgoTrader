@@ -84,8 +84,9 @@ try:
     #Append new stock to all_time_users
     for s in all_stocks:
         print(s)
+        print("About to run info")
         #Check if data is already up to date
-        info = yf.Ticker(s).history(period='max')
+        info = yf.Ticker(s).history(start = '2013-01-01', end = 'max')
         print(len(info))
         if 'Capital Gains' in info.columns: 
                 del info['Capital Gains']
@@ -97,10 +98,10 @@ try:
             # Calculate the daily returns
             try: 
                 info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
-                info['Volatility'] = info['Returns'].rolling(window=30).std() * np.sqrt(252)
+                info['Volatility_30_Day'] = info['Returns'].rolling(window=30).std() * np.sqrt(252)
             except: 
                 info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
-                info['Volatility'] = info['Returns'].rolling(window=len(info['Returns'])).std() * np.sqrt(252)
+                info['Volatility_30_Day'] = info['Returns'].rolling(window=len(info['Returns'])).std() * np.sqrt(252)
 
             info['Ticker'] = s
             print(info)
@@ -132,10 +133,10 @@ try:
         # Calculate the daily returns
         try: 
             info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
-            info['Volatility'] = info['Returns'].rolling(window=30).std() * np.sqrt(252)
+            info['Volatility_30_Day'] = info['Returns'].rolling(window=30).std() * np.sqrt(252)
         except: 
             info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
-            info['Volatility'] = info['Returns'].rolling(window=len(info['Returns'])).std() * np.sqrt(252)
+            info['Volatility_30_Day'] = info['Returns'].rolling(window=len(info['Returns'])).std() * np.sqrt(252)
 
         new_period = new_period.drop("Stock Splits", axis=1)
         new_period['Ticker'] = t 
