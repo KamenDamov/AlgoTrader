@@ -132,11 +132,11 @@ try:
 
         # Calculate the daily returns
         try: 
-            info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
-            info['Volatility_30_Day'] = info['Returns'].rolling(window=30).std() * np.sqrt(252)
+            new_period['Returns'] = np.log(new_period['Close'] / new_period['Close'].shift(1))
+            new_period['Volatility_30_Day'] = new_period['Returns'].rolling(window=30).std() * np.sqrt(252)
         except: 
-            info['Returns'] = np.log(info['Close'] / info['Close'].shift(1))
-            info['Volatility_30_Day'] = info['Returns'].rolling(window=len(info['Returns'])).std() * np.sqrt(252)
+            new_period['Returns'] = np.log(new_period['Close'] / new_period['Close'].shift(1))
+            new_period['Volatility_30_Day'] = new_period['Returns'].rolling(window=len(new_period['Returns'])).std() * np.sqrt(252)
 
         new_period = new_period.drop("Stock Splits", axis=1)
         new_period['Ticker'] = t 
@@ -357,7 +357,7 @@ try:
 
         # create the SQL query with the variable values
         update_query = """
-            "UPDATE indicators SET RSI = {}, A_D = {}, ADX = {}, Last_200_MovAvg = {}, Recommendation = '{}' WHERE ticker_symbol = '{}';"
+            UPDATE indicators SET RSI = {}, A_D = {}, ADX = {}, Last_200_MovAvg = {}, Recommendation = '{}' WHERE ticker_symbol = '{}';
         """.format(0 if math.isnan(rsi.iloc[-1]) else rsi.iloc[-1], 0 if math.isnan(df['AD'].iloc[-1]) else df['AD'].iloc[-1], 0 if math.isnan(df['ADX'].iloc[-1]) else df['ADX'].iloc[-1], 0 if math.isnan(df['MA'].iloc[-1]) else df['MA'].iloc[-1], recommendation, t)
         
         cur.execute(update_query)
