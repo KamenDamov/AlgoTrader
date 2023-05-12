@@ -84,7 +84,7 @@ for s in all_stocks:
     print(s)
     print("About to run info")
     #Check if data is already up to date
-    info = yf.Ticker(s).history(start = '2013-01-01', end = 'max')
+    info = yf.Ticker(s).history(start = '2013-01-01')
     print(len(info))
     if 'Capital Gains' in info.columns: 
             del info['Capital Gains']
@@ -118,12 +118,19 @@ for t in tick:
 
     #Produce returns and volatility by calling the api and keeping
     # only the records from maxDate and most current 
-    volatilityAndReturns = yf.Ticker(start = "2013-01-01", end = "max")
+    volatilityAndReturns = yf.Ticker(t).history(start = "2013-01-01")
+    volatilityAndReturns = volatilityAndReturns.reset_index()
+    print(volatilityAndReturns)
     volatilityAndReturns["Returns"] = np.log(volatilityAndReturns['Close'] / volatilityAndReturns['Close'].shift(1))
     volatilityAndReturns['Volatility_30_Day'] = volatilityAndReturns['Returns'].rolling(window=30).std() * np.sqrt(252)
 
     #Keep only wanted values beyond a certain date
-    volatilityAndReturns = volatilityAndReturns[volatilityAndReturns["Date"] > maxDate]
+    parsed_timestamp = datetime.strptime(str(volatilityAndReturns["Date"].iloc[0]), '%Y-%m-%d %H:%M:%S%z')
+    formatted_date = parsed_timestamp.strftime('%Y-%m-%d')
+    volatilityAndReturns = volatilityAndReturns[volatilityAndReturns[datetime.strptime(formatted_date, '%Y-%m-%d') > datetime.strptime(str(maxDate), '%Y-%m-%d')]]
+    volatilityAndReturns = volatilityAndReturns[["Returns", "Volatility_30_Day"]]
+    print(volatilityAndReturns)
+    break
 
     try: 
         startDate = datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d') + timedelta(days = 1)
