@@ -116,7 +116,12 @@ for t in tick:
     cur.execute(maxDateQuery)
     maxDate = [row[0] for row in cur.fetchall()]
 
-    #Produce  
+    #Produce returns and volatility by calling the api and keeping
+    # only the records from maxDate and most current 
+    volatilityAndReturns = yf.Ticker(start = "2013-01-01", end = "max")
+    volatilityAndReturns["Returns"] = np.log(volatilityAndReturns['Close'] / volatilityAndReturns['Close'].shift(1))
+    volatilityAndReturns['Volatility_30_Day'] = volatilityAndReturns['Returns'].rolling(window=30).std() * np.sqrt(252)
+
 
     try: 
         startDate = datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d') + timedelta(days = 1)
