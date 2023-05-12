@@ -122,6 +122,8 @@ for t in tick:
     volatilityAndReturns["Returns"] = np.log(volatilityAndReturns['Close'] / volatilityAndReturns['Close'].shift(1))
     volatilityAndReturns['Volatility_30_Day'] = volatilityAndReturns['Returns'].rolling(window=30).std() * np.sqrt(252)
 
+    #Keep only wanted values beyond a certain date
+    volatilityAndReturns = volatilityAndReturns[volatilityAndReturns["Date"] > maxDate]
 
     try: 
         startDate = datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d') + timedelta(days = 1)
