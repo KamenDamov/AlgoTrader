@@ -127,7 +127,7 @@ for t in tick:
     #Keep only wanted values beyond a certain date
     parsed_timestamp = datetime.strptime(str(volatilityAndReturns["Date"].iloc[0]), '%Y-%m-%d %H:%M:%S%z')
     formatted_date = parsed_timestamp.strftime('%Y-%m-%d')
-    volatilityAndReturns = volatilityAndReturns[(volatilityAndReturns["Date"] >= datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d'))]
+    volatilityAndReturns = volatilityAndReturns[(datetime.strptime(volatilityAndReturns["Date"].strftime('%Y-%m-%d'), '%Y-%m-%d') <= datetime.strptime(formatted_date, '%Y-%m-%d')) & (volatilityAndReturns["Date"] >= datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d'))]
     volatilityAndReturns = volatilityAndReturns[["Returns", "Volatility_30_Day"]]
     print(volatilityAndReturns)
     break
