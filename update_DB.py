@@ -111,11 +111,11 @@ for s in all_stocks:
 
 #Append missing stock data by querying most recent date
 for t in tick: 
-    print(t)
+    print("Testing out "+t)
     maxDateQuery = "SELECT \"Date\" FROM public.all_time_prices WHERE \"Ticker\" = '" + t + "' Order by \"Date\" desc LIMIT (1);"
     cur.execute(maxDateQuery)
     maxDate = [row[0] for row in cur.fetchall()]
-
+    maxDate = maxDate[0].strftime('%Y-%m-%d')
     #Produce returns and volatility by calling the api and keeping
     # only the records from maxDate and most current 
     volatilityAndReturns = yf.Ticker(t).history(start = "2013-01-01")
@@ -125,9 +125,10 @@ for t in tick:
     volatilityAndReturns['Volatility_30_Day'] = volatilityAndReturns['Returns'].rolling(window=30).std() * np.sqrt(252)
 
     #Keep only wanted values beyond a certain date
-    parsed_timestamp = datetime.strptime(str(volatilityAndReturns["Date"].iloc[0]), '%Y-%m-%d %H:%M:%S%z')
+    parsed_timestamp = datetime.strptime(str(volatilityAndReturns["Date"].iloc[-1]), '%Y-%m-%d %H:%M:%S%z')
     formatted_date = parsed_timestamp.strftime('%Y-%m-%d')
-    volatilityAndReturns = volatilityAndReturns[(datetime.strptime(volatilityAndReturns["Date"].strftime('%Y-%m-%d'), '%Y-%m-%d') <= datetime.strptime(formatted_date, '%Y-%m-%d')) & (volatilityAndReturns["Date"] >= datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d'))]
+    print(maxDate, formatted_date)
+    #volatilityAndReturns = volatilityAndReturns[]
     volatilityAndReturns = volatilityAndReturns[["Returns", "Volatility_30_Day"]]
     print(volatilityAndReturns)
     break
