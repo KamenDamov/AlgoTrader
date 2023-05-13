@@ -14,6 +14,7 @@ import numpy as np
 from scipy import stats
 from datetime import datetime, timedelta
 import math
+import pytz
 
 #DB connection
 # Connect to the PostgreSQL server
@@ -108,7 +109,7 @@ for s in all_stocks:
         conn.commit()
 
 #TODO REMOVE DUPLCIATES
-
+tz = pytz.timezone('America/New_York')
 #Append missing stock data by querying most recent date
 for t in tick: 
     print("Testing out "+t)
@@ -128,7 +129,7 @@ for t in tick:
     parsed_timestamp = datetime.strptime(str(volatilityAndReturns["Date"].iloc[-1]), '%Y-%m-%d %H:%M:%S%z')
     formatted_date = parsed_timestamp.strftime('%Y-%m-%d')
     print(maxDate, formatted_date)
-    #volatilityAndReturns = volatilityAndReturns[]
+    volatilityAndReturns = volatilityAndReturns[(volatilityAndReturns['Date'] >= tz.localize(maxDate)) & (volatilityAndReturns['Date'] <= tz.localize(formatted_date))]
     volatilityAndReturns = volatilityAndReturns[["Returns", "Volatility_30_Day"]]
     print(volatilityAndReturns)
     break
