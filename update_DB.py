@@ -116,7 +116,7 @@ for t in tick:
     maxDateQuery = "SELECT \"Date\" FROM public.all_time_prices WHERE \"Ticker\" = '" + t + "' Order by \"Date\" desc LIMIT (1);"
     cur.execute(maxDateQuery)
     maxDate = [row[0] for row in cur.fetchall()]
-    maxDate = maxDate[0].strftime('%Y-%m-%d')
+    latestDate = maxDate[0].strftime('%Y-%m-%d')
     #Produce returns and volatility by calling the api and keeping
     # only the records from maxDate and most current 
     volatilityAndReturns = yf.Ticker(t).history(start = "2013-01-01")
@@ -129,13 +129,11 @@ for t in tick:
     parsed_timestamp = datetime.strptime(str(volatilityAndReturns["Date"].iloc[-1]), '%Y-%m-%d %H:%M:%S%z')
     formatted_date = parsed_timestamp.strftime('%Y-%m-%d')
     print(maxDate, formatted_date)
-    volatilityAndReturns = volatilityAndReturns[(volatilityAndReturns['Date'] >= tz.localize(maxDate)) & (volatilityAndReturns['Date'] <= tz.localize(formatted_date))]
+    volatilityAndReturns = volatilityAndReturns[(volatilityAndReturns['Date'] >= latestDate) & (volatilityAndReturns['Date'] <= formatted_date)]
     volatilityAndReturns = volatilityAndReturns[["Returns", "Volatility_30_Day"]]
     print(volatilityAndReturns)
-    break
-
     try: 
-        startDate = datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d') + timedelta(days = 1)
+        startDate = datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d')# + timedelta(days = 1)
     except IndexError:
         print('No stock info') 
         continue
@@ -160,10 +158,12 @@ for t in tick:
     if 'Capital Gains' in new_period.columns: 
             del new_period['Capital Gains']
     print(new_period.columns)
+    print(new_period)
+    break
     engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
     new_period.to_sql('all_time_prices', engine, if_exists = 'append', index = False)
     conn.commit()
-    print(new_period)
+    
 
 #Update momentum
 # Open a cursor to perform database operations
