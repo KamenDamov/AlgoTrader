@@ -116,7 +116,8 @@ for t in tick:
     maxDateQuery = "SELECT \"Date\" FROM public.all_time_prices WHERE \"Ticker\" = '" + t + "' Order by \"Date\" desc LIMIT (1);"
     cur.execute(maxDateQuery)
     maxDate = [row[0] for row in cur.fetchall()]
-    latestDate = maxDate[0].strftime('%Y-%m-%d')
+    maxDate = datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d') + timedelta(days = 1)
+    latestDate = maxDate.strftime('%Y-%m-%d')
     #Produce returns and volatility by calling the api and keeping
     # only the records from maxDate and most current 
     volatilityAndReturns = yf.Ticker(t).history(start = "2013-01-01")
@@ -133,7 +134,7 @@ for t in tick:
     volatilityAndReturns = volatilityAndReturns[["Returns", "Volatility_30_Day"]]
     print(volatilityAndReturns)
     try: 
-        startDate = datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d')# + timedelta(days = 1)
+        startDate = datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d') + timedelta(days = 1)
     except IndexError:
         print('No stock info') 
         continue
