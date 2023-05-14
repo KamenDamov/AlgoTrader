@@ -9,8 +9,8 @@ initial_portfolio_value = 100000
 time_horizon = 5  # in years
 
 # Define the expected annual return and standard deviation of the stock portfolio
-expected_return = 0.07
-volatility = 0.15
+expected_return = 0.001
+volatility = 0.015
 
 # Calculate the daily return and annualized volatility
 daily_return = np.log(1 + expected_return) / 252
