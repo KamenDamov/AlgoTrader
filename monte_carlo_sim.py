@@ -18,7 +18,7 @@ cur = conn.cursor()
 #Get the tickers as a list
 #Query the stock price
 #Querying AOS
-cur.execute('SELECT * FROM all_time_prices where "Ticker" = \'ABT\' order by "Date" desc')
+cur.execute('SELECT * FROM all_time_prices where "Ticker" = \'AP\' order by "Date" desc')
 
 rows = cur.fetchall()
 # Get the column names from the cursor's description
@@ -39,6 +39,7 @@ length = len(df['Close'].iloc[:200])
 # Calculate the weights for each quarter
 weights = [0.4] * (length // 4) + [0.3] * (length // 4) + [0.2] * (length // 4) + [0.1] * (length - (length // 4) * 3)
 
+df['Weight'] = None
 # Assign the weights to the DataFrame
 df['Weight'].iloc[:200] = weights[:length]
 
