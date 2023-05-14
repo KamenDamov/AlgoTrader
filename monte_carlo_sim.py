@@ -2,13 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Define stock parameters
-mean_return = 0.005
-volatility = 0.002
+mean_return = 0.01
+volatility = 0.1
 current_price = 100
 
 # Set number of simulations and time horizon
-num_simulations = 1000
-time_horizon = 252 # number of trading days in a year
+num_simulations = 10000
+time_horizon = 100 # number of trading days in a year
 
 # Create empty matrix to store simulated prices
 price_matrix = np.zeros((time_horizon, num_simulations))
@@ -37,3 +37,4 @@ plt.title('Simulated Prices for Added Stock')
 plt.xlabel('Day')
 plt.ylabel('Price')
 plt.show()
+print("Done")
