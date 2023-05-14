@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import psycopg2
 import pandas as pd
+import math
 
 # Connect to the PostgreSQL server
 conn = psycopg2.connect(
@@ -17,7 +18,8 @@ cur = conn.cursor()
 #Get the tickers as a list
 #Query the stock price
 #Querying AOS
-cur.execute('SELECT * FROM all_time_prices where "Ticker" = \'AOS\'')
+cur.execute('SELECT * FROM all_time_prices where "Ticker" = \'MSFT\' order by "Date" desc')
+
 rows = cur.fetchall()
 # Get the column names from the cursor's description
 columns = [desc[0] for desc in cur.description]
@@ -30,12 +32,15 @@ print(df)
 np.random.seed(42)
 
 # Define the initial stock price and parameters
-initial_price = 100.0
-drift = 0.5
-volatility = 0.02
-time_horizon = 1.0  # in years
-num_steps = 252  # number of trading days in a year
-num_simulations = 100  # number of simulations
+initial_price = df["Close"].iloc[0]
+print("Start price: ", initial_price)
+drift = df['Returns'].mean()
+print("Drift: ", drift)
+volatility = df['Returns'].std()
+print("Volatility: ", volatility)
+time_horizon = 10/252  # in years
+num_steps = 10  # number of trading days in a year
+num_simulations = 100 # number of simulations
 
 # Calculate the daily drift and volatility
 daily_drift = (drift - 0.5 * volatility ** 2) / num_steps
@@ -43,6 +48,7 @@ daily_volatility = volatility / np.sqrt(num_steps)
 
 # Generate Brownian increments
 dt = time_horizon / num_steps
+print(dt)
 increments = np.random.normal(0, daily_volatility * np.sqrt(dt), size=(num_steps, num_simulations))
 
 # Calculate the stock price paths using Brownian motion
