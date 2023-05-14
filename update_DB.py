@@ -116,7 +116,10 @@ for t in tick:
     maxDateQuery = "SELECT \"Date\" FROM public.all_time_prices WHERE \"Ticker\" = '" + t + "' Order by \"Date\" desc LIMIT (1);"
     cur.execute(maxDateQuery)
     maxDate = [row[0] for row in cur.fetchall()]
-    currDate = datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d') + timedelta(days = 1)
+    try:
+        currDate = datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d') + timedelta(days = 1)
+    except IndexError: 
+        continue
     latestDate = currDate.strftime('%Y-%m-%d')
     #Produce returns and volatility by calling the api and keeping
     # only the records from maxDate and most current 
@@ -160,12 +163,11 @@ for t in tick:
             del new_period['Capital Gains']
     print(new_period.columns)
     print("Before : ", new_period)
-    new_period["Returns"] = volatilityAndReturns["Returns"]
+    new_period["Returns"] = volatilityAndReturns["Returns"].tolist()#.reset_index(drop=True, inplace=True)
     print(new_period["Returns"], volatilityAndReturns["Returns"])
-    new_period["Volatility_30_Day"] = volatilityAndReturns["Volatility_30_Day"]
+    new_period["Volatility_30_Day"] = volatilityAndReturns["Volatility_30_Day"].tolist()#.reset_index(drop=True, inplace=True)
     print(new_period.columns)
     print("After : ", new_period)
-    break
     engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
     new_period.to_sql('all_time_prices', engine, if_exists = 'append', index = False)
     conn.commit()
@@ -270,8 +272,10 @@ for i in range(len(tick)):
         momentum_append = pd.Series([tick[i],info['Close'][-1],perc_change1y,0,perc_change6m,0,perc_change3m,0,perc_change1m,0, total_hurst],
                                 index = momentum_cols)
         #print(momentum_append)
-    except TypeError: 
+    except TypeError as e: 
         print("Nonetype found for: " + tick[i])
+        print(e)
+        break
         continue
     except IndexError: 
         print("Couldn't find: ",tick[i])
