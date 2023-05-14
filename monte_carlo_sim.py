@@ -32,7 +32,21 @@ print(df)
 np.random.seed(42)
 
 # Define the initial stock price and parameters
-initial_price = df["Close"].iloc[0]
+initial_price = df["Close"].iloc[0] #0 is the most recent record
+
+length = len(df['Close'])
+
+# Calculate the weights for each quarter
+weights = [0.1] * (length // 4) + [0.2] * (length // 4) + [0.3] * (length // 4) + [0.4] * (length - (length // 4) * 3)
+
+# Assign the weights to the DataFrame
+df['Weight'] = weights[:length]
+
+# Calculate the weighted mean of the stock prices
+weighted_mean = (df['Price'] * df['Weight']).sum() / df['Weight'].sum()
+
+print(f"Weighted Mean: {weighted_mean}")
+
 print("Start price: ", initial_price)
 drift = df['Returns'].mean()
 print("Drift: ", drift)
