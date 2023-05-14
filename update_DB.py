@@ -116,8 +116,8 @@ for t in tick:
     maxDateQuery = "SELECT \"Date\" FROM public.all_time_prices WHERE \"Ticker\" = '" + t + "' Order by \"Date\" desc LIMIT (1);"
     cur.execute(maxDateQuery)
     maxDate = [row[0] for row in cur.fetchall()]
-    maxDate = datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d') + timedelta(days = 1)
-    latestDate = maxDate.strftime('%Y-%m-%d')
+    currDate = datetime.strptime(maxDate[0].strftime('%Y-%m-%d'), '%Y-%m-%d') + timedelta(days = 1)
+    latestDate = currDate.strftime('%Y-%m-%d')
     #Produce returns and volatility by calling the api and keeping
     # only the records from maxDate and most current 
     volatilityAndReturns = yf.Ticker(t).history(start = "2013-01-01")
@@ -145,7 +145,7 @@ for t in tick:
     except KeyError: 
         print("Stock not found")
         continue
-
+    """
     # Calculate the daily returns
     try: 
         new_period['Returns'] = np.log(new_period['Close'] / new_period['Close'].shift(1))
@@ -153,13 +153,18 @@ for t in tick:
     except: 
         new_period['Returns'] = np.log(new_period['Close'] / new_period['Close'].shift(1))
         new_period['Volatility_30_Day'] = new_period['Returns'].rolling(window=len(new_period['Returns'])).std() * np.sqrt(252)
-
+    """
     new_period = new_period.drop("Stock Splits", axis=1)
     new_period['Ticker'] = t 
     if 'Capital Gains' in new_period.columns: 
             del new_period['Capital Gains']
     print(new_period.columns)
-    print(new_period)
+    print("Before : ", new_period)
+    new_period["Returns"] = volatilityAndReturns["Returns"]
+    print(new_period["Returns"], volatilityAndReturns["Returns"])
+    new_period["Volatility_30_Day"] = volatilityAndReturns["Volatility_30_Day"]
+    print(new_period.columns)
+    print("After : ", new_period)
     break
     engine = create_engine('postgresql+psycopg2://', creator=lambda: conn)
     new_period.to_sql('all_time_prices', engine, if_exists = 'append', index = False)
