@@ -18,7 +18,7 @@ cur = conn.cursor()
 #Get the tickers as a list
 #Query the stock price
 #Querying AOS
-cur.execute('SELECT * FROM all_time_prices where "Ticker" = \'MSFT\' order by "Date" desc')
+cur.execute('SELECT * FROM all_time_prices where "Ticker" = \'ABT\' order by "Date" desc')
 
 rows = cur.fetchall()
 # Get the column names from the cursor's description
@@ -34,27 +34,28 @@ np.random.seed(42)
 # Define the initial stock price and parameters
 initial_price = df["Close"].iloc[0] #0 is the most recent record
 
-length = len(df['Close'])
+length = len(df['Close'].iloc[:200])
 
 # Calculate the weights for each quarter
-weights = [0.1] * (length // 4) + [0.2] * (length // 4) + [0.3] * (length // 4) + [0.4] * (length - (length // 4) * 3)
+weights = [0.4] * (length // 4) + [0.3] * (length // 4) + [0.2] * (length // 4) + [0.1] * (length - (length // 4) * 3)
 
 # Assign the weights to the DataFrame
-df['Weight'] = weights[:length]
+df['Weight'].iloc[:200] = weights[:length]
 
 # Calculate the weighted mean of the stock prices
-weighted_mean = (df['Price'] * df['Weight']).sum() / df['Weight'].sum()
+weighted_mean = (df['Close'] * df['Weight']).sum() / df['Weight'].sum()
 
 print(f"Weighted Mean: {weighted_mean}")
+print(df)
 
 print("Start price: ", initial_price)
-drift = df['Returns'].mean()
+drift = df['Returns'].iloc[:200].mean()
 print("Drift: ", drift)
-volatility = df['Returns'].std()
+volatility = df['Returns'].iloc[:200].std()
 print("Volatility: ", volatility)
 time_horizon = 10/252  # in years
 num_steps = 10  # number of trading days in a year
-num_simulations = 100 # number of simulations
+num_simulations = 10 # number of simulations
 
 # Calculate the daily drift and volatility
 daily_drift = (drift - 0.5 * volatility ** 2) / num_steps
