@@ -54,8 +54,8 @@ drift = df['Returns'].iloc[:200].mean()
 print("Drift: ", drift)
 volatility = df['Returns'].iloc[:200].std()
 print("Volatility: ", volatility)
-time_horizon = 10/252  # in years
-num_steps = 10  # number of trading days in a year
+time_horizon = 50/252  # in years
+num_steps = 50  # number of trading days in a year
 num_simulations = 10 # number of simulations
 
 # Calculate the daily drift and volatility
